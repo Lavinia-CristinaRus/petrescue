@@ -6,6 +6,7 @@ import Report from '../components/Report';
 const Reports = ({ navigation }) => {
   return (
     <View style={{backgroundColor: 'white', height: '100%', paddingTop: 10}}>
+      <SearchBar/>
       <StatusBar
         backgroundColor="white"
         barStyle="dark-content"

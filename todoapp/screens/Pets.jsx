@@ -2,10 +2,12 @@ import React from 'react';
 import {View, Text, StatusBar, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Pet from '../components/Pet';
+import SearchBar from '../components/SearchBar';
 
 const Pets = ({ navigation }) => {
   return (
     <View style={{backgroundColor: 'white', height: '100%', paddingTop: 10}}>
+      <SearchBar/>
       <StatusBar
         backgroundColor="white"
         barStyle="dark-content"
@@ -27,8 +29,7 @@ const Pets = ({ navigation }) => {
         <Pet />
         <View
           style={{justifyContent: 'center', alignItems: 'center', padding: 20}}>
-          <Icon
-            name="redo"
+          <Icon name="redo"
             style={{fontSize: 60, opacity: 0.2}}
           />
         </View>
