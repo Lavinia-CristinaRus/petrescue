@@ -27,6 +27,11 @@ const reportSchema = new mongoose.Schema({
     required: true,
   },
 
+  ownerPicture: {
+    public_id: String,
+    url: String,
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

@@ -17,6 +17,11 @@ const requestSchema = new mongoose.Schema({
     required: true,
   },
 
+  ownerPicture: {
+    public_id: String,
+    url: String,
+  },
+
   petId: {
     type: String,
     required: true,

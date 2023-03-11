@@ -7,6 +7,7 @@ import fs from "fs";
 export const addConfirmation = async (req, res) => {
   try {
     const owner = req.user._id;
+    const ownerPicture = req.user.avatar;
     const avatar = req.files.avatar.tempFilePath;
     const report = req.report._id;
 
@@ -26,6 +27,7 @@ export const addConfirmation = async (req, res) => {
         url: mycloud.secure_url,
       },
       owner,
+      ownerPicture,
       report,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });

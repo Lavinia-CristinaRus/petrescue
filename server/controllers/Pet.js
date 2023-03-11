@@ -8,6 +8,7 @@ export const addPet = async (req, res) => {
   try {
     const { name, characteristics, area } = req.body;
     const owner = req.user._id;
+    const ownerPicture = req.user.avatar;
     const avatar = req.files.avatar.tempFilePath;
 
     if (!user.verified) {
@@ -29,6 +30,7 @@ export const addPet = async (req, res) => {
       },
       area,
       owner,
+      ownerPicture,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });
 

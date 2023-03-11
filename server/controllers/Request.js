@@ -8,6 +8,7 @@ export const addRequest = async (req, res) => {
   try {
     const { message, area } = req.body;
     const owner = req.user._id;
+    const ownerPicture = req.user.avatar;
     const avatar = req.files.avatar.tempFilePath;
     const pet = req.pet._id;
 
@@ -28,6 +29,7 @@ export const addRequest = async (req, res) => {
       },
       message,
       owner,
+      ownerPicture,
       pet,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });

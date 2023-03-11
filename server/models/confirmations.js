@@ -12,6 +12,11 @@ const confirmationSchema = new mongoose.Schema({
     required: true,
   },
 
+  ownerPicture: {
+    public_id: String,
+    url: String,
+  },
+
   reportId: {
     type: String,
     required: true,
