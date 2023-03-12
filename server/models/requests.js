@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
 const requestSchema = new mongoose.Schema({
-  avatar: {
-    public_id: String,
-    url: String,
-  },
-
   message: {
     type: String,
     required: false,

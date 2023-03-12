@@ -1,68 +1,15 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, TextInput} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionic from 'react-native-vector-icons/Ionicons';
-import {Allreports, getAllReports} from '../redux/action';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 
-const Report = () => {
+const Report = ({_id,name, characteristics, avatar, area, owner, ownerPicture, createdAt, solved, valid, seen, otp_expiry}, isSeen) => {
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [error, setError] = useState();
-  const {reports} = useSelector(state => state.reports);
-  // const [ReportImage, setReportImage] = useState(reports[1].image);
-  // const [reportDescription, setReportDescription] = useState(reports[1].description);
-  // useEffect(() => {
-  //   dispatch(AllReports());
-  // }, []);
-  // const test = () => {
-  //     console.log(reports);
-  // }
-
-  const reportInfo = [
-    // {
-    //   reportTitle: {name},
-    //   reportPersonImage: {avatar},
-    //   reportImage: require('../assets/report2.jpg'),
-    //   description: 'Apartament de vanzare',
-    //   likes: 765,
-    //   isLiked: false,
-    // },
-    {
-      reportTitle: 'Lavinia',
-      reportPersonImage: require('../assets/userProfile.jpg'),
-      reportImage: require('../assets/report2.jpg'),
-      description: 'Apartament de vanzare',
-      likes: 345,
-      isLiked: false,
-    },
-    {
-      reportTitle: 'Ana',
-      reportPersonImage: require('../assets/userProfile.jpg'),
-      reportImage: require('../assets/report3.jpg'),
-      description: 'S-a renovat fatada blocului',
-      likes: 734,
-      isLiked: false,
-    },
-    {
-      reportTitle: 'Daniel',
-      reportPersonImage: require('../assets/userProfile.jpg'),
-      reportImage: require('../assets/report4.jpg'),
-      description: 'Caut chirias',
-      likes: 875,
-      isLiked: false,
-    },
-  ];
-
+  const [seenByUser, setSeen] = useState(isSeen);
   return (
-    <View>
-      {reportInfo.map((data, index) => {
-        const [like, setLike] = useState(data.isLiked);
-        return (
           <View
-            key={index}
+            key={_id}
             style={{
               paddingBottom: 10,
               borderBottomColor: 'gray',
@@ -77,12 +24,12 @@ const Report = () => {
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
-                  source={data.reportPersonImage}
+                  source={ownerPicture.url}
                   style={{width: 40, height: 40, borderRadius: 100}}
                 />
                 <View style={{paddingLeft: 5}}>
                   <Text style={{fontSize: 15, fontWeight: 'bold'}}>
-                    {data.reportTitle}
+                    {name}
                   </Text>
                 </View>
               </View>
@@ -95,7 +42,7 @@ const Report = () => {
                 alignItems: 'center',
               }}>
               <Image
-                source={data.reportImage}
+                source={avatar}
                 style={{width: '90%', height: 300, borderRadius: 25}}
               />
             </View>
@@ -108,13 +55,13 @@ const Report = () => {
                 paddingVertical: 15,
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TouchableOpacity onPress={() => setLike(!like)}>
+                <TouchableOpacity onPress={() => setSeen(!seenByUser)}>
                   <AntDesign
-                    name={like ? 'heart' : 'hearto'}
+                    name={seenByUser ? 'eye' : 'eyeo'}
                     style={{
                       paddingRight: 10,
                       fontSize: 20,
-                      color: like ? 'red' : 'black',
+                      color: seenByUser ? 'red' : 'black',
                     }}
                   />
                 </TouchableOpacity>
@@ -122,8 +69,11 @@ const Report = () => {
             </View>
             <View style={{paddingHorizontal: 15}}>
               <Text>
-                Seen in this area by {like ? 'you and' : ''}{' '}
-                {like ? data.likes + 1 : data.likes} others
+                Seen by {seenByUser ? 'you and' : ''}{' '}
+                {seenByUser ? seen + 1 : seen} others
+              </Text>
+              <Text>
+                {area}
               </Text>
               <Text
                 style={{
@@ -131,13 +81,10 @@ const Report = () => {
                   fontSize: 14,
                   paddingVertical: 2,
                 }}>
-                {data.description}
+                {characteristics}
               </Text>
             </View>
           </View>
-        );
-      })}
-    </View>
   );
 };
 
