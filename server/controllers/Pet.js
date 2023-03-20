@@ -91,3 +91,26 @@ export const adoptPet = async () => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getAllPets = async (req, res) => {
+  try {
+    const pets = await Pet.find().populate('owner',['name', 'avatar']);
+    if(pets) {
+      sendToken(res, pets, 200);
+    }
+    else {
+      res.status(404).json({ success: false, message: "Not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const getPetsByUser = async (req, res) => {
+  try {
+    const pet = await Pet.find({owner: req.user._id});
+    sendToken(res, pet, 200);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}

@@ -80,3 +80,21 @@ export const rejectConfirmation = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getConfirmationsByReport = async (req, res) => {
+  try {
+    const confirmation = await Confirmation.find({report: req.report._id}).populate('owner',['name', 'avatar']);
+    sendToken(res, confirmation, 200);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const getConfirmationsByUser = async (req, res) => {
+  try {
+    const confirmation = await Confirmation.find({owner: req.user._id}).populate('pet',['name', 'avatar']);
+    sendToken(res, confirmation, 200);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}

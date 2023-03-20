@@ -82,3 +82,21 @@ export const rejectRequest = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getRequestsByUser = async (req, res) => {
+  try {
+    const request = await Request.find({owner: req.user._id}).populate('pet',['name', 'avatar']);
+    sendToken(res, request, 200);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const getRequestsByPet = async (req, res) => {
+  try {
+    const request = await Request.find({pet: req.pet._id}).populate('owner',['name', 'avatar']);
+    sendToken(res, request, 200);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}

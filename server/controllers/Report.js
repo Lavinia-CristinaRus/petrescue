@@ -91,3 +91,26 @@ export const SeenBy = async (req,res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const getAllReports = async (req, res) => {
+  try {
+    const reports = await Report.find().populate('owner',['name', 'avatar']);
+    if(reports) {
+      sendToken(res, reports, 200);
+    }
+    else {
+      res.status(404).json({ success: false, message: "Not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const getReportsByUser = async (req, res) => {
+  try {
+    const report = await Report.find({owner: req.user._id});
+    sendToken(res, report, 200);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
