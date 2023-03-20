@@ -12,9 +12,9 @@ const confirmationSchema = new mongoose.Schema({
     ref: 'User',
   },
 
-  reportId: {
-    type: String,
-    required: true,
+  report: {
+    type: Schema.Types.ObjectId,
+    ref: 'Report',
   },
 
   createdAt: {

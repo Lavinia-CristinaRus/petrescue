@@ -6,7 +6,7 @@ import fs from "fs";
 
 export const addRequest = async (req, res) => {
   try {
-    const { message, area } = req.body;
+    const { message } = req.body;
     const owner = req.user._id;
     const avatar = req.files.avatar.tempFilePath;
     const pet = req.pet._id;

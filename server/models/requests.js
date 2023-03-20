@@ -12,9 +12,9 @@ const requestSchema = new mongoose.Schema({
     ref: 'User',
   },
 
-  petId: {
-    type: String,
-    required: true,
+  pet: {
+    type: Schema.Types.ObjectId,
+    ref: 'Pet',
   },
 
   createdAt: {
