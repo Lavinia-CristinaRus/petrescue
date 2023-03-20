@@ -8,13 +8,8 @@ const requestSchema = new mongoose.Schema({
   },
 
   owner: {
-    type: String,
-    required: true,
-  },
-
-  ownerPicture: {
-    public_id: String,
-    url: String,
+    type: Schema.Types.ObjectId,
+    ref: 'User',
   },
 
   petId: {

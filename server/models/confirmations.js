@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 
 const confirmationSchema = new mongoose.Schema({
@@ -8,13 +8,8 @@ const confirmationSchema = new mongoose.Schema({
   },
 
   owner: {
-    type: String,
-    required: true,
-  },
-
-  ownerPicture: {
-    public_id: String,
-    url: String,
+    type: Schema.Types.ObjectId,
+    ref: 'User',
   },
 
   reportId: {
