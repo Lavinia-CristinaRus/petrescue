@@ -4,7 +4,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch} from 'react-redux';
 
-const Request = ({_id, message, owner, ownerPicture, petId, createdAt, valid, accepted, otp_expiry}) => {
+const Request = ({_id, message, owner, pet, createdAt, valid, accepted, otp_expiry}) => {
   const dispatch = useDispatch();
   return (
           <View
@@ -40,7 +40,7 @@ const Request = ({_id, message, owner, ownerPicture, petId, createdAt, valid, ac
                 alignItems: 'center',
               }}>
               <Image
-                source={ownerPicture.url}
+                source={owner.avatar.url}
                 style={{width: '90%', height: 300, borderRadius: 25}}
               />
             </View>

@@ -4,7 +4,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch} from 'react-redux';
 
-const Confirmation = ({_id, avatar, owner, ownerPicture, reportId, createdAt, valid, accepted, otp_expiry}) => {
+const Confirmation = ({_id, avatar, owner, report, createdAt, valid, accepted, otp_expiry}) => {
   const dispatch = useDispatch();
   return (
           <View
@@ -23,7 +23,7 @@ const Confirmation = ({_id, avatar, owner, ownerPicture, reportId, createdAt, va
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
-                  source={ownerPicture.url}
+                  source={owner.avatar.url}
                   style={{width: 40, height: 40, borderRadius: 100}}
                 />
                 <View style={{paddingLeft: 5}}>

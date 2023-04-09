@@ -4,7 +4,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch} from 'react-redux';
 
-const Report = ({_id,name, characteristics, avatar, area, owner, ownerPicture, createdAt, solved, valid, seen, otp_expiry}, isSeen) => {
+const Report = ({_id,name, characteristics, avatar, area, owner, createdAt, solved, valid, seen, otp_expiry}, isSeen) => {
   const dispatch = useDispatch();
   const [seenByUser, setSeen] = useState(isSeen);
   return (
@@ -24,7 +24,7 @@ const Report = ({_id,name, characteristics, avatar, area, owner, ownerPicture, c
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
-                  source={ownerPicture.url}
+                  source={owner.avatar.url}
                   style={{width: 40, height: 40, borderRadius: 100}}
                 />
                 <View style={{paddingLeft: 5}}>
