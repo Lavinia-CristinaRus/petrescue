@@ -22,7 +22,7 @@ const Footer = () => {
                 <Icon name="paw" size={30} color="#759" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("profile")}>
-                <Icon name="user" size={30} color="#759" />
+                <Icon name="user-alt" size={30} color="#759" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("donate")}>
                 <Icon name="piggy-bank" size={30} color="#759" />

@@ -3,10 +3,22 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch} from 'react-redux';
+import {savePet, unsavePet} from '../redux/action';
 
-const Pet = ({_id,name, characteristics, avatar, area, owner, createdAt, solved, valid, otp_expiry}, isFavourite) => {
+const Pet = (_id,name, characteristics, avatar, area, owner, createdAt, solved, valid, otp_expiry, savedPets) => {
   const dispatch = useDispatch();
-  const [favourite, setFavourite] = useState(isFavourite);
+  const user = useSelector(state => state.auth)
+  const isPetSaved = id => savedPets?.includes(id);
+  const isSaved = isPetSaved(_id);
+  const [savedPet, setSaved] = useState(isSaved);
+  const handleSave = (id) => {
+    dispatch(savePet(id));
+    setSaved(savedPetsList => [...savedPetsList, id]);
+  }
+  const handleUnsave = (id) => {
+    dispatch(unsavePet(id));
+    setSeen(savedPetsList => savedPetsList.filter(petId => petId !== id));
+  }
   return (
           <View
             key={_id}
@@ -55,13 +67,13 @@ const Pet = ({_id,name, characteristics, avatar, area, owner, createdAt, solved,
                 paddingVertical: 15,
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <TouchableOpacity onPress={() => setFavourite(!favourite)}>
+              <TouchableOpacity onPress={() => savedPet ? handleUnsave(_id): handleSave(_id)}>
                   <AntDesign
-                    name={favourite ? 'heart' : 'hearto'}
+                    name={savedPet ? 'heart' : 'hearto'}
                     style={{
                       paddingRight: 10,
                       fontSize: 20,
-                      color: favourite ? 'red' : 'black',
+                      color: savedPet ? 'red' : 'black',
                     }}
                   />
                 </TouchableOpacity>

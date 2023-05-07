@@ -9,6 +9,8 @@ import {
   updatePassword,
   updateProfile,
   verify,
+  savePet,
+  unsavePet
 } from "../controllers/User.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
@@ -28,5 +30,7 @@ router.route("/updatepassword").put(isAuthenticated, updatePassword);
 
 router.route("/forgetpassword").post(forgetPassword);
 router.route("/resetpassword").put(resetPassword);
+router.route("/savepet/:_id").put(isAuthenticated, savePet);
+router.route("/unsavepet/:_id").put(isAuthenticated, unsavePet);
 
 export default router;

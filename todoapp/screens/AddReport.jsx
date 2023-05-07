@@ -67,7 +67,7 @@ const AddReport = ({ navigation, route }) => {
                 <Image style={stylesChoosePhoto.image} source={{ uri: reportImage ? reportImage : null}}/>
                 {!reportImage &&
                 <>
-                <Image style={stylesChoosePhoto.icon} source={require('../assets/uploadImage.png')}/>
+                <Image style={stylesChoosePhoto.icon} source={require('../assets/uploadImage.jpg')}/>
                 <Text style={values.h2Style}>Choose a Photo</Text>
                 </>}
             </View>
@@ -94,7 +94,7 @@ const AddReport = ({ navigation, route }) => {
     );
 };
 
-export default AddReport
+export default AddReport;
 
 const stylesChoosePhoto = StyleSheet.create({
     container: {
@@ -112,8 +112,8 @@ const stylesChoosePhoto = StyleSheet.create({
         borderRadius: 15,
     },
     icon: {
-        width: 50,
-        height: 50,
+        width: 150,
+        height: 150,
         marginTop: -200
     }
     

@@ -143,3 +143,97 @@ export const messageReducer = createReducer(
     },
   }
 );
+
+export const reportReducer = createReducer(
+  {},
+  {
+    allReportsRequest: (state) => {
+      state.loading = true;
+    },
+    allReportsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.post = action.payload;
+      // state.message = action.payload.message;
+    },
+    allReportsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    seenPetRequest: (state) => {
+      state.loading = true;
+    },
+    seenPetSuccess: (state, action) => {
+      // const postId = action.payload.postId;
+      // const postToUpdate = state.post.find((p) => p._id === postId);
+      // postToUpdate.likes += 1;
+    },    
+    seenPetFailure: (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = false;
+      state.error = action.payload;
+    },
+
+    unseenPetRequest: (state) => {
+      state.loading = true;
+    },
+    unseenPetSuccess: (state, action) => {
+      // const postId = action.payload.postId;
+      // const postToUpdate = state.post.find((p) => p._id === postId);
+      // postToUpdate.likes -= 1;
+    },    
+    unseenPetFailure: (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = false;
+      state.error = action.payload;
+    },
+
+  },
+);
+
+export const petReducer = createReducer(
+  {},
+  {
+    allPetsRequest: (state) => {
+      state.loading = true;
+    },
+    allPetsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.post = action.payload;
+      // state.message = action.payload.message;
+    },
+    allPetsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    savePetRequest: (state) => {
+      state.loading = true;
+    },
+    savePetSuccess: (state, action) => {
+      // const postId = action.payload.postId;
+      // const postToUpdate = state.post.find((p) => p._id === postId);
+      // postToUpdate.likes += 1;
+    },    
+    savePetFailure: (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = false;
+      state.error = action.payload;
+    },
+
+    unsavePetRequest: (state) => {
+      state.loading = true;
+    },
+    unsavePetSuccess: (state, action) => {
+      // const postId = action.payload.postId;
+      // const postToUpdate = state.post.find((p) => p._id === postId);
+      // postToUpdate.likes -= 1;
+    },    
+    unsavePetFailure: (state, action) => {
+      state.loading = false;
+      state.isAuthenticated = false;
+      state.error = action.payload;
+    },
+
+  },
+);

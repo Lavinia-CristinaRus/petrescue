@@ -67,7 +67,7 @@ const AddPet = ({ navigation, route }) => {
                 <Image style={stylesChoosePhoto.image} source={{ uri: petImage ? petImage : null}}/>
                 {!petImage &&
                 <>
-                <Image style={stylesChoosePhoto.icon} source={require('../assets/uploadImage.png')}/>
+                <Image style={stylesChoosePhoto.icon} source={require('../assets/uploadPetImage.jpg')}/>
                 <Text style={values.h2Style}>Choose a Photo</Text>
                 </>}
             </View>
@@ -86,7 +86,7 @@ const AddPet = ({ navigation, route }) => {
         <Button
             style={styles.btn}
             onPress={addPetHandler}>
-            <Text style={{ color: "#fff" }}>Pet</Text>
+            <Text style={{ color: "#fff" }}>Add Pet</Text>
         </Button>
         </View>
         </View>
@@ -94,7 +94,7 @@ const AddPet = ({ navigation, route }) => {
     );
 };
 
-export default AddPet
+export default AddPet;
 
 const stylesChoosePhoto = StyleSheet.create({
     container: {
@@ -112,8 +112,8 @@ const stylesChoosePhoto = StyleSheet.create({
         borderRadius: 15,
     },
     icon: {
-        width: 50,
-        height: 50,
+        width: 150,
+        height: 150,
         marginTop: -200
     }
     

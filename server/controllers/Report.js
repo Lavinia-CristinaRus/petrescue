@@ -77,11 +77,25 @@ export const updateReport = async (req, res) => {
   }
 };
 
-export const SeenBy = async (req,res) => {
+export const seenBy = async (req,res) => {
   try {
     const user = req.user._id;
     const report = req.report._id;
     report.seen.push({
+      user
+    });
+    await report.save();
+
+    res.status(200).json({ success: true, message: "Number of users updated successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+export const unseenBy = async (req,res) => {
+  try {
+    const user = req.user._id;
+    const report = req.report._id;
+    report.seen.pop({
       user
     });
     await report.save();

@@ -60,7 +60,7 @@ const Profile = ({ navigation, route }) => {
                 }}
             >
                 <Avatar.Image
-                    size={100}
+                    size={150}
                     source={{ uri: avatar ? avatar : null }}
                     style={{ backgroundColor: "#759" }}
                 />

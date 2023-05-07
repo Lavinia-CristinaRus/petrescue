@@ -3,10 +3,23 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch} from 'react-redux';
+import {seenPet, unseenPet} from '../redux/action';
 
-const Report = ({_id,name, characteristics, avatar, area, owner, createdAt, solved, valid, seen, otp_expiry}, isSeen) => {
+const Report = (_id,name, characteristics, avatar, area, owner, createdAt, solved, valid, seen) => {
+  const user = useSelector(state => state.auth)
   const dispatch = useDispatch();
+  const isPetSeen = id => seen?.includes(id);
+  const isSeen = isPetSeen(user._id);
   const [seenByUser, setSeen] = useState(isSeen);
+  const handleSeen = (id) => {
+    dispatch(seenPet(id));
+    setSeen(usersSeen => [...usersSeen, id]);
+  }
+
+  const handleUnseen = (id) => {
+      dispatch(unseenPet(id));
+      setSeen(usersSeen => usersSeen.filter(userId => userId !== id));
+  }
   return (
           <View
             key={_id}
@@ -42,7 +55,7 @@ const Report = ({_id,name, characteristics, avatar, area, owner, createdAt, solv
                 alignItems: 'center',
               }}>
               <Image
-                source={avatar}
+                source={avatar.url}
                 style={{width: '90%', height: 300, borderRadius: 25}}
               />
             </View>
@@ -55,7 +68,7 @@ const Report = ({_id,name, characteristics, avatar, area, owner, createdAt, solv
                 paddingVertical: 15,
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TouchableOpacity onPress={() => setSeen(!seenByUser)}>
+                <TouchableOpacity onPress={() => seenByUser ? handleUnseen(user._id) : handleSeen(user._id)}>
                   <AntDesign
                     name={seenByUser ? 'eye' : 'eyeo'}
                     style={{

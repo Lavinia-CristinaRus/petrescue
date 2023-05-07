@@ -259,3 +259,18 @@ export const savePet = async (req,res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const unsavePet = async (req,res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const pet = req.pet._id;
+    user.savedPets.push({
+      pet
+    });
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Pet saved successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
