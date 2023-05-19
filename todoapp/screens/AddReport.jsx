@@ -4,15 +4,49 @@ import { useSelector } from 'react-redux'
 import { useDispatch} from 'react-redux'
 import { Button } from 'react-native-paper'
 import { addReport, loadUser } from '../redux/action'
-
+import MapView, { Marker } from 'react-native-maps';
+import { PROVIDER_GOOGLE } from 'react-native-maps';
+import * as Location from 'expo-location';
+//to add characteristics
 const AddReport = ({ navigation, route }) => {
     
     const {user} = useSelector(state => state.auth)
-    const [name, setName] = useState(user.name);
-    const [avatar, setAvatar] = useState(user.avatar.url);
+    const [reportName, setReportName] = useState("");
     const [reportDescription, setReportDescription] = useState("");
     const [reportImage, setReportImage] = useState("");
     const { loading, message, error } = useSelector(state => state.message)
+    Location.setGoogleApiKey("AIzaSyAUqWMPfAQS19hQYWNffvRAqm0aHqja9IY");
+    const [location, setLocation] = useState(null);
+    const [markerPosition, setMarkerPosition] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      // Request location permissions
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Please grant location permissions');
+        return;
+      }
+
+      // Get current location
+      let { coords } = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = coords;
+      const initialRegion = {
+        latitude,
+        longitude,
+        latitudeDelta: 0.001,
+        longitudeDelta: 0.002,
+      };
+      setLocation(initialRegion);
+      setMarkerPosition(initialRegion);
+    })();
+  }, []);
+
+  const handleMarkerDragEnd = (e) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    setMarkerPosition({ latitude, longitude });
+  };
+
 
     const dispatch = useDispatch()
 
@@ -33,7 +67,7 @@ const AddReport = ({ navigation, route }) => {
     }, [route])
 
     const addReportHandler = async () => {
-        await dispatch(addReport(reportImage,reportDescription))
+        await dispatch(addReport(reportName,reportImage,reportDescription,markerPosition))
         dispatch(loadUser())
     }
 
@@ -54,11 +88,11 @@ const AddReport = ({ navigation, route }) => {
         <View style={{justifyContent: 'center'}}>
         <View style={styles.horizontalPaddingView}>
             <View style={styles.container}>
-                <View>
-                    <Text style={values.h1Style}>Hello, {name}</Text>
-                    <Text style={values.pStyle}>What do you want to share?</Text>
+                <Image style={styles.image} source={{ uri: user.avatar.url}}/>
+                <View style={{paddingHorizontal: 20}}>
+                    <Text style={values.h1Style}>Hello, {user.name}</Text>
+                    <Text style={values.pStyle}>Tell us about the stray pet you saw</Text>
                 </View>
-                <Image style={styles.image} source={{ uri: avatar}}/>
             </View>
             <View style={{height: 40}}></View>
         </View>
@@ -72,8 +106,16 @@ const AddReport = ({ navigation, route }) => {
                 </>}
             </View>
         </TouchableOpacity>
-        <View style={{height: 40}}></View>
+        <View style={{height: 20}}></View>
         <View style={{alignItems: "center"}}>
+        <View style={{ width: "75%"}}>
+            <TextInput
+                style={styles.input}
+                placeholder="Title"
+                value={reportName}
+                onChangeText={setReportName}
+            />
+        </View>
         <View style={{ width: "75%"}}>
             <TextInput
                 style={styles.input}
@@ -82,7 +124,27 @@ const AddReport = ({ navigation, route }) => {
                 onChangeText={setReportDescription}
             />
         </View>
-        <View style={{height: 40}}></View>
+        <View style={{height: 20}}></View>
+        <View style={styles.mapContainer}>
+        {location && (
+            <MapView
+            provider = {PROVIDER_GOOGLE} 
+            style={styles.map}
+            initialRegion={location}
+            showsUserLocation={true}
+            showsMyLocationButton={true}
+            >
+            {markerPosition && (
+                <Marker
+                coordinate={markerPosition}
+                draggable={true}
+                onDragEnd={handleMarkerDragEnd}
+                />
+            )}
+            </MapView>
+        )}
+        </View>
+        <View style={{height: 20}}></View>
         <Button
             style={styles.btn}
             onPress={addReportHandler}>
@@ -90,6 +152,7 @@ const AddReport = ({ navigation, route }) => {
         </Button>
         </View>
         </View>
+        <View style={{height: 80}}></View>
         </ScrollView>
     );
 };
@@ -102,7 +165,7 @@ const stylesChoosePhoto = StyleSheet.create({
         height: 200,
         borderRadius: 15,
         borderColor: 'black',
-        borderWidth: 1,
+        borderWidth: 0.5,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -142,8 +205,7 @@ const values = {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'row'
     },
     image: {
         width: 45,
@@ -174,6 +236,18 @@ const styles = StyleSheet.create({
         backgroundColor: "#759",
         padding: 5,
         width: "70%",
+    },
+    map: {
+        width: '98%',
+        height: '98%',
+    },
+    mapContainer: {
+        width: '75%',
+        height: 150,
+        borderColor: 'black',
+        borderWidth: 0.5,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
 })
 

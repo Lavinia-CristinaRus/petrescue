@@ -173,7 +173,19 @@ export const resetPassword = (otp, newPassword) => async (dispatch) => {
   }
 };
 
-export const getAllReports = (dispatch) => async (dispatch) => {
+export const addReport = (reportData) => async (dispatch) => {
+  try {
+    dispatch({ type: "addReportRequest" });
+    const response = await axios.post(`${serverUrl}/addreport`, reportData);
+    console.log(response.data);
+    dispatch({ type: 'addReportSuccess', payload: response.data });
+  } catch (error) {
+    console.error(error);
+    dispatch({ type: 'addReportFailure', payload: error.message });
+  }
+};
+
+export const getAllReports = () => async (dispatch) => {
   try {
     dispatch({ type: "allReportsRequest" });
 
@@ -213,7 +225,19 @@ export const uneenPet = (userId) => async (dispatch) => {
   }
 };
 
-export const getAllPets = (dispatch) => async (dispatch) => {
+export const addPet = (petData) => async (dispatch) => {
+  try {
+    dispatch({ type: "addPetRequest" });
+    const response = await axios.post(`${serverUrl}/addpet`, petData);
+    console.log(response.data);
+    dispatch({ type: 'addPetSuccess', payload: response.data });
+  } catch (error) {
+    console.error(error);
+    dispatch({ type: 'addPetFailure', payload: error.message });
+  }
+};
+
+export const getAllPets = () => async (dispatch) => {
   try {
     dispatch({ type: "allPetsRequest" });
 

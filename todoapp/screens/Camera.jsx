@@ -31,6 +31,8 @@ const CameraComponent = ({ navigation, route }) => {
             allowsEditing: true, aspect: [1, 1], quality: 1
         });
         if (route.params.updateProfile) return navigation.navigate("profile", { image: data.uri })
+        else if (route.params.addReport) return navigation.navigate("addreport", { image: data.uri })
+        else if (route.params.addPet) return navigation.navigate("addreport", { image: data.uri })
         else return navigation.navigate("register", { image: data.uri })
     }
 
@@ -38,6 +40,8 @@ const CameraComponent = ({ navigation, route }) => {
 
         const data = await camera.takePictureAsync();
         if (route.params.updateProfile) return navigation.navigate("profile", { image: data.uri })
+        else if (route.params.addReport) return navigation.navigate("addreport", { image: data.uri })
+        else if (route.params.addPet) return navigation.navigate("addreport", { image: data.uri })
         else return navigation.navigate("register", { image: data.uri })
 
     }

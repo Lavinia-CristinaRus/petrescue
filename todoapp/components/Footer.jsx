@@ -24,8 +24,8 @@ const Footer = () => {
             <TouchableOpacity onPress={() => navigation.navigate("profile")}>
                 <Icon name="user-alt" size={30} color="#759" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("donate")}>
-                <Icon name="piggy-bank" size={30} color="#759" />
+            <TouchableOpacity onPress={() => navigation.navigate("map")}>
+                <Icon name="map-marked-alt" size={30} color="#759" />
             </TouchableOpacity>
         </View>
     )

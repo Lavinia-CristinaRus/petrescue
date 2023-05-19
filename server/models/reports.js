@@ -7,6 +7,11 @@ const reportSchema = new mongoose.Schema({
     required: true,
   },
 
+  description: {
+    type: String,
+    required: true,
+  },
+
   characteristics: [{
     type: String,
     required: false,
@@ -18,8 +23,8 @@ const reportSchema = new mongoose.Schema({
   },
 
   area: {
-    type: String,
-    required: true,
+    latitude: { type: Number, required: true},
+    longitude: { type: Number, required: true},
   },
 
   owner: {
@@ -44,6 +49,7 @@ const reportSchema = new mongoose.Schema({
 
   seen: [{
     user_id: "String",
+    default: null,
   }],
 
   otp_expiry: {

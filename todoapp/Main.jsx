@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import Reports from './screens/Reports'
 import Pets from './screens/Pets'
-import Donate from './screens/Donate'
+import Map from './screens/Map'
 import Login from './screens/Login'
 import Footer from './components/Footer'
 import Profile from "./screens/Profile"
@@ -40,7 +40,7 @@ const Main = () => {
 
                 <Stack.Screen name='reports' component={Reports} options={{ headerShown: false }} />
                 <Stack.Screen name='pets' component={Pets} options={{ headerShown: false }} />
-                <Stack.Screen name='donate' component={Donate} options={{ headerShown: false }} />
+                <Stack.Screen name='map' component={Map} options={{ headerShown: false }} />
                 <Stack.Screen name='login' component={Login} options={{ headerShown: false }} />
                 <Stack.Screen name='register' component={Register} options={{ headerShown: false }} />
                 <Stack.Screen name='verify' component={Verify} options={{ headerShown: false }} />

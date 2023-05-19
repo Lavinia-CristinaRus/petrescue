@@ -147,6 +147,19 @@ export const messageReducer = createReducer(
 export const reportReducer = createReducer(
   {},
   {
+    addReportRequest: (state) => {
+      state.loading = true;
+    },
+    addReportSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.post = action.payload;
+      // state.message = action.payload.message;
+    },
+    addReportFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     allReportsRequest: (state) => {
       state.loading = true;
     },
@@ -194,6 +207,19 @@ export const reportReducer = createReducer(
 export const petReducer = createReducer(
   {},
   {
+    addPetRequest: (state) => {
+      state.loading = true;
+    },
+    addPetSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.pet = action.payload;
+      // state.message = action.payload.message;
+    },
+    addPetFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     allPetsRequest: (state) => {
       state.loading = true;
     },

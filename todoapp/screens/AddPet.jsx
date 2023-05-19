@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux'
 import { useDispatch} from 'react-redux'
 import { Button } from 'react-native-paper'
 import { addPet, loadUser } from '../redux/action'
+//to add characteristics and area
 
 const AddPet = ({ navigation, route }) => {
     
     const {user} = useSelector(state => state.auth)
-    const [name, setName] = useState(user.name);
-    const [avatar, setAvatar] = useState(user.avatar.url);
+    const [petName, setPetName] = useState("");
     const [petDescription, setPetDescription] = useState("");
     const [petImage, setPetImage] = useState("");
     const { loading, message, error } = useSelector(state => state.message)
@@ -33,7 +33,7 @@ const AddPet = ({ navigation, route }) => {
     }, [route])
 
     const addPetHandler = async () => {
-        await dispatch(addPet(petImage,petDescription))
+        await dispatch(addPet(petName,petImage,petDescription))
         dispatch(loadUser())
     }
 
@@ -54,11 +54,11 @@ const AddPet = ({ navigation, route }) => {
         <View style={{justifyContent: 'center'}}>
         <View style={styles.horizontalPaddingView}>
             <View style={styles.container}>
-                <View>
-                    <Text style={values.h1Style}>Hello, {name}</Text>
-                    <Text style={values.pStyle}>What do you want to share?</Text>
+                <Image style={styles.image} source={{ uri: user.avatar.url}}/>
+                <View style={{paddingHorizontal: 20}}>
+                    <Text style={values.h1Style}>Hello, {user.name}</Text>
+                    <Text style={values.pStyle}>Tell us about the pet you want to give for adoption</Text>
                 </View>
-                <Image style={styles.image} source={{ uri: avatar}}/>
             </View>
             <View style={{height: 40}}></View>
         </View>
@@ -74,6 +74,15 @@ const AddPet = ({ navigation, route }) => {
         </TouchableOpacity>
         <View style={{height: 40}}></View>
         <View style={{alignItems: "center"}}>
+        <View style={{ width: "75%"}}>
+            <TextInput
+                style={styles.input}
+                placeholder="Name"
+                value={petName}
+                onChangeText={setPetName}
+            />
+        </View>
+        <View style={{height: 40}}></View>
         <View style={{ width: "75%"}}>
             <TextInput
                 style={styles.input}
@@ -142,8 +151,7 @@ const values = {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'row'
     },
     image: {
         width: 45,
