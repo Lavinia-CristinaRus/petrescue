@@ -321,3 +321,18 @@ export const addConfirmation = (confirmationData) => async (dispatch) => {
     dispatch({ type: 'addConfirmationFailure', payload: error.message });
   }
 };
+
+export const addRequest = (requestData) => async (dispatch) => {
+  try {
+    dispatch({ type: "addRequestRequest" });
+    const response = await axios.post(`${serverUrl}/addrequest`, requestData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    dispatch({ type: 'addRequestSuccess', payload: response.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: 'addRequestFailure', payload: error.message });
+  }
+};

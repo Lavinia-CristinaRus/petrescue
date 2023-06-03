@@ -6,7 +6,7 @@ import { useDispatch, useSelector} from 'react-redux';
 import {getAllPets} from '../redux/action';
 import { Button } from 'react-native-paper';
 
-const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave}) => {
+const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave, adoptHandler}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const [savedByUser, setSaved] = useState(saved);
@@ -14,9 +14,6 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
     dispatch(getAllPets());
   }, [savedByUser], );
 
-  const adoptHandler = async () => {
-    dispatch(loadUser())
-  }
   return (
     <View style={styles.customView}
       key={_id}>

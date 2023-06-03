@@ -162,12 +162,14 @@ const AddReport = ({ navigation, route }) => {
                 onChangeText={setReportName}
             />
         </View>
-        <View style={{ width: "75%"}}>
+        <View style={{ width: "75%", content: 'fill'}}>
             <TextInput
                 style={styles.input}
                 placeholder="Description"
                 value={reportDescription}
                 onChangeText={setReportDescription}
+                multiline
+                numberOfLines={reportDescription.split('\n').length}
             />
         </View>
         <View style={{height: 15}}></View>
@@ -350,6 +352,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 10,
         fontSize: 15,
+        content: 'fill',
     },
     btn: {
         backgroundColor: "#759",

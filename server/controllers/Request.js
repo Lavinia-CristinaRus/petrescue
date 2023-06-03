@@ -6,34 +6,26 @@ import fs from "fs";
 
 export const addRequest = async (req, res) => {
   try {
-    const { message } = req.body;
-    const owner = req.user._id;
-    const avatar = req.files.avatar.tempFilePath;
-    const pet = req.pet._id;
+    console.log(req.body)
+    const { message, petId } = req.body;
+    const owner = req.user;
 
-    if (!user.verified) {
+    if (!owner.verified) {
       return res
         .status(400)
         .json({ success: false, message: "Please verify your account first!" });
     }
 
-    const mycloud = await cloudinary.v2.uploader.upload(avatar);
-
-    fs.rmSync("./tmp", { recursive: true });
-
-    request = await Request.create({
-      avatar: {
-        public_id: mycloud.public_id,
-        url: mycloud.secure_url,
-      },
+    const request = await Request.create({
       message,
-      owner,
-      pet,
+      owner:owner._id,
+      pet: petId,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });
 
     res.status(200).json({ success: true, message: "Adoption request created successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };

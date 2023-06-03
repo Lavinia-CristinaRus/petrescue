@@ -8,13 +8,18 @@ import { addRequest, loadUser } from '../redux/action'
 const AddRequest = ({ navigation, route }) => {
     
     const {user} = useSelector(state => state.auth)
+    const { loading, message, error } = useSelector(state => state.adoption)
+    const {pet} = route.params;
     const [requestMessage, setRequestMessage] = useState("");
-    const { loading, message, error } = useSelector(state => state.message)
 
     const dispatch = useDispatch()
+    const [petId, setPetId] = useState(pet);
 
     const addRequestHandler = async () => {
-        await dispatch(addRequest(requestImage,requestMessage))
+        const myForm = new FormData();
+        myForm.append("message", requestMessage);
+        myForm.append("petId", petId);
+        await dispatch(addRequest(myForm))
         dispatch(loadUser())
     }
 
@@ -38,28 +43,20 @@ const AddRequest = ({ navigation, route }) => {
                 <Image style={styles.image} source={{ uri: user.avatar.url}}/>
                 <View style={{paddingHorizontal: 20}}>
                     <Text style={values.h1Style}>Hello, {user.name}</Text>
-                    <Text style={values.pStyle}>Tell the pet owner why he should pick you for pet adoption</Text>
+                    <Text style={values.pStyle}>Leave a message for the pet owner to convince him to pick you for pet adoption</Text>
                 </View>
             </View>
             <View style={{height: 40}}></View>
         </View>
-        <TouchableOpacity style={{alignItems: 'center'}} onPress={handleImage}>
-            <View style={stylesChoosePhoto.container}>
-                <Image style={stylesChoosePhoto.image} source={{ uri: requestImage ? requestImage : null}}/>
-                {!requestImage &&
-                <>
-                <Image style={stylesChoosePhoto.icon} source={require('../assets/uploadImage.jpg')}/>
-                <Text style={values.h2Style}>Choose a Photo</Text>
-                </>}
-            </View>
-        </TouchableOpacity>
         <View style={{alignItems: "center"}}>
-        <View style={{ width: "75%"}}>
+        <View style={{ width: "75%", content: 'fill'}}>
             <TextInput
                 style={styles.input}
                 placeholder="Message"
                 value={requestMessage}
                 onChangeText={setRequestMessage}
+                multiline
+                numberOfLines={requestMessage.split('\n').length}
             />
         </View>
         <View style={{height: 20}}></View>
@@ -145,11 +142,12 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 15,
         fontSize: 15,
+        content: 'fill',
     },
     btn: {
         backgroundColor: "#759",
         padding: 5,
-        width: "70%",
+        content: 'fill',
     },
 })
 

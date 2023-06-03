@@ -136,12 +136,14 @@ const AddPet = ({ navigation, route }) => {
                 onChangeText={setPetName}
             />
         </View>
-        <View style={{ width: "75%"}}>
+        <View style={{ width: "75%", content: 'fill'}}>
             <TextInput
                 style={styles.input}
                 placeholder="Description"
                 value={petDescription}
                 onChangeText={setPetDescription}
+                multiline
+                numberOfLines={petDescription.split('\n').length}
             />
         </View>
         <View style={{height: 20}}></View>
@@ -325,6 +327,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 10,
         fontSize: 15,
+        content: 'fill',
     },
     btn: {
         backgroundColor: "#759",

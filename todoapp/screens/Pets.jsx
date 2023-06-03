@@ -114,6 +114,10 @@ const Pets = ({ navigation, route}) => {
               // setSeens(prevSeens => prevSeens.filter(postId => postId !== user.user._id));
               // setSeen(false);
             }
+            const adoptHandler = async () => {
+              navigation.navigate("addrequest",{pet:data._id});
+            }
+
             return(
               <View key={index}>
                 <View style={{height: 20}}></View>
@@ -130,6 +134,7 @@ const Pets = ({ navigation, route}) => {
                   saved ={user.user.savedPets?.includes(data._id)}
                   handleSave = {handleSave}
                   handleUnsave = {handleUnsave}
+                  adoptHandler = {adoptHandler}
                 />
               </View>
             )
