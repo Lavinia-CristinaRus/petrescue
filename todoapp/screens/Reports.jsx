@@ -57,6 +57,7 @@ const Reports = ({ navigation, route}) => {
     const [keyword, setKeyword] = useState("");
     const reports = useSelector(state => state.report.report);
     const { message, error } = useSelector(state => state.report);
+    const { messageConf, errorConf } = useSelector(state => state.confirmation);
     const user = useSelector(state => state.auth);
 
     useEffect(() => {
@@ -68,7 +69,18 @@ const Reports = ({ navigation, route}) => {
           alert(message.message)
           dispatch({ type: "clearMessage" });
       }
-  }, [alert, error, message, dispatch])
+    }, [alert, error, message, dispatch]);
+
+    useEffect(() => {
+      if (error) {
+          alert(error);
+          dispatch({ type: "clearError" });
+      }
+      if (message) {
+          alert(message.message)
+          dispatch({ type: "clearMessage" });
+      }
+    }, [alert, error, message, dispatch])
 
     useEffect(() => {
       dispatch(getAllReports());
@@ -112,8 +124,8 @@ const Reports = ({ navigation, route}) => {
               // setSeens(prevSeens => prevSeens.filter(postId => postId !== user.user._id));
               // setSeen(false);
             }
-            const pickUpHandler = async (reportId) => {
-              navigation.navigate("addconfirmation",{reportId});
+            const pickUpHandler = async () => {
+              navigation.navigate("addconfirmation",{reportId:data._id});
             }
 
             return(

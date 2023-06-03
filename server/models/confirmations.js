@@ -2,6 +2,11 @@ import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 
 const confirmationSchema = new mongoose.Schema({
+  description: {
+    type: String,
+    default: true,
+  },
+
   avatar: {
     public_id: String,
     url: String,
@@ -29,7 +34,7 @@ const confirmationSchema = new mongoose.Schema({
 
   accepted: {
     type: Boolean,
-    default: undefined,
+    required:false,
   },
 
   otp_expiry: Date,

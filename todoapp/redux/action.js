@@ -306,3 +306,18 @@ export const unsavePet = (petId) => async (dispatch) => {
     });
   }
 };
+
+export const addConfirmation = (confirmationData) => async (dispatch) => {
+  try {
+    dispatch({ type: "addConfirmationRequest" });
+    const response = await axios.post(`${serverUrl}/addconfirmation`, confirmationData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    dispatch({ type: 'addConfirmationSuccess', payload: response.data });
+  } catch (error) {
+    console.log(error);
+    dispatch({ type: 'addConfirmationFailure', payload: error.message });
+  }
+};

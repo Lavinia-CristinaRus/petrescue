@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch} from 'react-redux'
 import { Button } from 'react-native-paper'
 import { addConfirmation, loadUser } from '../redux/action'
+import mime from 'mime'
 
 const AddConfirmation = ({ navigation, route }) => {
     
@@ -14,7 +15,7 @@ const AddConfirmation = ({ navigation, route }) => {
     const {reportId} = route.params;
 
     const dispatch = useDispatch()
-
+    const [report, setReport] = useState(reportId);
     const handleImage = () => {
         navigation.navigate("camera", {
             addConfirmation: true
@@ -22,7 +23,6 @@ const AddConfirmation = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-
         if (route.params) {
             if (route.params.image) {
                 setConfirmationImage(route.params.image)
@@ -32,21 +32,19 @@ const AddConfirmation = ({ navigation, route }) => {
     }, [route])
 
     const addConfirmationHandler = async () => {
-        await dispatch(addConfirmation(confirmationImage,confirmationDescription))
+        const myForm = new FormData();
+        myForm.append("confirmationImage", confirmationImage);
+        myForm.append("confirmationDescription", confirmationDescription);
+        myForm.append("reportId", report);
+        myForm.append("confirmationImage", {
+            uri: confirmationImage,
+            type: mime.getType(confirmationImage),
+            name: confirmationImage.split("/").pop()
+        })
+
+        await dispatch(addConfirmation(myForm))
         dispatch(loadUser())
     }
-
-    useEffect(() => {
-        if (error) {
-            alert(error);
-            dispatch({ type: "clearError" });
-            dispatch({ type: "clearError" });
-        }
-        if (message) {
-            alert(message)
-            dispatch({ type: "clearMessage" });
-        }
-    }, [alert, error, message, dispatch])
 
     return (
         <ScrollView style={styles.containerBig}>
@@ -71,6 +69,7 @@ const AddConfirmation = ({ navigation, route }) => {
                 </>}
             </View>
         </TouchableOpacity>
+        <View style={{height: 10}}></View>
         <View style={{alignItems: "center"}}>
         <View style={{ width: "75%"}}>
             <TextInput
@@ -97,23 +96,23 @@ export default AddConfirmation;
 
 const stylesChoosePhoto = StyleSheet.create({
     container: {
-        width: '75%',
-        height: 200,
+        width: 220,
+        height: 300,
         borderRadius: 15,
         borderColor: 'black',
-        borderWidth: 0.5,
+        borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center'
     },
     image: {
         width: '100%',
-        height: 200,
+        height: 300,
         borderRadius: 15,
     },
     icon: {
-        width: 150,
-        height: 150,
-        marginTop: -200
+        width: 210,
+        height: 210,
+        marginTop: -300
     }
     
 })

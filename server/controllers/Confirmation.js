@@ -6,33 +6,34 @@ import fs from "fs";
 
 export const addConfirmation = async (req, res) => {
   try {
-    const owner = req.user._id;
-    const avatar = req.files.avatar.tempFilePath;
-    const report = req.report._id;
+    const {confirmationDescription, reportId} = req.body;
+    const owner = req.user;
+    const avatar = req.files.confirmationImage.tempFilePath;
 
-    if (!user.verified) {
+    if (!owner.verified) {
+      console.log("cica userul nu e verified");
       return res
         .status(400)
-        .json({ success: false, message: "Please verify your account first!" });
+        .json({ success: false, messageConf: "Please verify your account first!" });
     }
 
     const mycloud = await cloudinary.v2.uploader.upload(avatar);
 
     fs.rmSync("./tmp", { recursive: true });
-
-    request = await Confirmation.create({
+    const confirmation = await Confirmation.create({
+      description: confirmationDescription,
       avatar: {
         public_id: mycloud.public_id,
         url: mycloud.secure_url,
       },
-      owner,
-      report,
+      owner: owner._id,
+      report: reportId,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });
-
-    res.status(200).json({ success: true, message: "Confirmation request created successfully" });
+    res.status(200).json({ success: true, messageConf: "Confirmation request created successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    res.status(500).json({ success: false, messageConf: error.message });
   }
 };
 

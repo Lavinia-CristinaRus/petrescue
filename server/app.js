@@ -3,7 +3,7 @@ import User from "./routers/User.js";
 import Report from "./routers/Report.js";
 import Pet from "./routers/Pet.js"
 // import Request from "./routers/Request.js"
-// import Confirmation from "./routers/Confirmation.js"
+import Confirmation from "./routers/Confirmation.js"
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import cors from "cors";
@@ -25,7 +25,7 @@ app.use("/api/v1", User);
 app.use("/api/v1", Report);
 app.use("/api/v1", Pet);
 // app.use("/api/v1", Request);
-// app.use("/api/v1", Confirmation);
+app.use("/api/v1", Confirmation);
 
 app.get("/", (req, res) => {
   res.send("Server is working");

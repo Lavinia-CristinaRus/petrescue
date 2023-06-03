@@ -275,3 +275,55 @@ export const petReducer = createReducer(
     },
   },
 );
+
+export const confirmationReducer = createReducer(
+  {},
+  {
+    addConfirmationRequest: (state) => {
+      state.loading = true;
+    },
+    addConfirmationSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.messageConf = action.payload;
+      // state.message = action.payload.message;
+    },
+    addConfirmationFailure: (state, action) => {
+      state.loading = false;
+      state.errorConf = action.payload;
+    },
+    clearError: (state) => {
+      state.errorConf = null;
+    },
+
+    clearMessage: (state) => {
+      state.messageConf = null;
+    },
+  },
+);
+
+export const adoptionReducer = createReducer(
+  {},
+  {
+    addRequestRequest: (state) => {
+      state.loading = true;
+    },
+    addRequestSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    addRequestFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null;
+    },
+
+    clearMessage: (state) => {
+      state.message = null;
+    },
+  },
+);
