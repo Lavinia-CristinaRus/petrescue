@@ -1,14 +1,22 @@
 import { Report } from "../models/reports.js";
-//import { sendMail } from "../utils/sendMail.js";
-//utils/sendToken.js";
+// import { sendMail } from "../utils/sendMail.js";
+// import { sendToken } from "../utils/sendToken.js";
 import cloudinary from "cloudinary";
 import fs from "fs";
+// to check addReport info
 
 export const addReport = async (req, res) => {
   try {
-    const { name, characteristics, area } = req.body;
-    const owner = req.user._id;
-    const avatar = req.files.avatar.tempFilePath;
+    const { reportName, reportDescription, animal, size, ageCategory, aggressionLevel, health, location, latitude, longitude } = req.body;
+    const user = req.user;
+    const owner = user._id;
+    const avatar = req.files.reportImage.tempFilePath;
+    var characteristics = [];
+    characteristics.push(animal);
+    characteristics.push(size);
+    characteristics.push(ageCategory);
+    characteristics.push(aggressionLevel);
+    characteristics.push(health);
 
     if (!user.verified) {
       return res
@@ -20,15 +28,20 @@ export const addReport = async (req, res) => {
 
     fs.rmSync("./tmp", { recursive: true });
 
-    report = await Report.create({
-      name,
-      characteristics,
+    const report = await Report.create({
+      name: reportName,
+      description: reportDescription,
+      characteristics: characteristics,
       avatar: {
         public_id: mycloud.public_id,
         url: mycloud.secure_url,
       },
-      area,
-      owner,
+      area: {
+        location: location,
+        latitude: latitude,
+        longitude: longitude
+      },
+      owner: owner,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });
 
@@ -47,7 +60,7 @@ export const obsoleteReport = async (req, res) => {
 
     await report.save();
 
-    sendToken(res, report, 200, "Report obsoleted successfully");
+    // sendToken(res, report, 200, "Report obsoleted successfully");
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -80,10 +93,10 @@ export const updateReport = async (req, res) => {
 export const seenBy = async (req,res) => {
   try {
     const user = req.user._id;
-    const report = req.report._id;
-    report.seen.push({
-      user
-    });
+    const reportId = req.body.reportId;
+    const report = await Report.findById(reportId);
+    console.log(report);
+    report.seen.push(user);
     await report.save();
 
     res.status(200).json({ success: true, message: "Number of users updated successfully" });
@@ -94,10 +107,9 @@ export const seenBy = async (req,res) => {
 export const unseenBy = async (req,res) => {
   try {
     const user = req.user._id;
-    const report = req.report._id;
-    report.seen.pop({
-      user
-    });
+    const reportId = req.body.reportId;
+    const report = await Report.findById(reportId);
+    report.seen.pop(user);
     await report.save();
 
     res.status(200).json({ success: true, message: "Number of users updated successfully" });
@@ -110,10 +122,10 @@ export const getAllReports = async (req, res) => {
   try {
     const reports = await Report.find().populate('owner',['name', 'avatar']);
     if(reports) {
-      sendToken(res, reports, 200);
+      return res.status(200).send(reports);
     }
     else {
-      res.status(404).json({ success: false, message: "Not found" });
+      return res.status(200).json({success: true, message: "No reports yet"});
     }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -123,7 +135,7 @@ export const getAllReports = async (req, res) => {
 export const getReportsByUser = async (req, res) => {
   try {
     const report = await Report.find({owner: req.user._id});
-    sendToken(res, report, 200);
+    // sendToken(res, report, 200);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

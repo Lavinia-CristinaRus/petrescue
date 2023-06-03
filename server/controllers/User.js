@@ -248,10 +248,9 @@ export const resetPassword = async (req, res) => {
 export const savePet = async (req,res) => {
   try {
     const user = await User.findById(req.user._id);
-    const pet = req.pet._id;
-    user.savedPets.push({
-      pet
-    });
+    const pet = req.body.petId;
+    console.log(user);
+    user.savedPets.push(pet);
     await user.save();
 
     res.status(200).json({ success: true, message: "Pet saved successfully" });
@@ -263,13 +262,12 @@ export const savePet = async (req,res) => {
 export const unsavePet = async (req,res) => {
   try {
     const user = await User.findById(req.user._id);
-    const pet = req.pet._id;
-    user.savedPets.push({
-      pet
-    });
+    const pet = req.body.petId;
+    console.log(user);
+    user.savedPets.pop(pet);
     await user.save();
 
-    res.status(200).json({ success: true, message: "Pet saved successfully" });
+    res.status(200).json({ success: true, message: "Pet unsaved successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -3,14 +3,21 @@ import { Pet } from "../models/pets.js";
 //utils/sendToken.js";
 import cloudinary from "cloudinary";
 import fs from "fs";
+//to check addPet info
 
 export const addPet = async (req, res) => {
   try {
-    const { name, characteristics, area } = req.body;
-    const owner = req.user._id;
-    const avatar = req.files.avatar.tempFilePath;
+    const { petName, petDescription, animal, size, ageCategory, aggressionLevel, health,location} = req.body;
+    const owner = req.user;
+    const avatar = req.files.petImage.tempFilePath;
+    var characteristics = [];
+    characteristics.push(animal);
+    characteristics.push(size);
+    characteristics.push(ageCategory);
+    characteristics.push(aggressionLevel);
+    characteristics.push(health);
 
-    if (!user.verified) {
+    if (!owner.verified) {
       return res
         .status(400)
         .json({ success: false, message: "Please verify your account first!" });
@@ -21,14 +28,15 @@ export const addPet = async (req, res) => {
     fs.rmSync("./tmp", { recursive: true });
 
     let pet = await Pet.create({
-      name,
-      characteristics,
+      name: petName,
+      description: petDescription,
+      characteristics: characteristics,
       avatar: {
         public_id: mycloud.public_id,
         url: mycloud.secure_url,
       },
-      area,
-      owner,
+      area: location,
+      owner: owner._id,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });
 
@@ -96,10 +104,10 @@ export const getAllPets = async (req, res) => {
   try {
     const pets = await Pet.find().populate('owner',['name', 'avatar']);
     if(pets) {
-      sendToken(res, pets, 200);
+      return res.status(200).send(pets);
     }
     else {
-      res.status(404).json({ success: false, message: "Not found" });
+      return res.status(200).json({success: true, message: "No pets available for adoption yet"});
     }
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

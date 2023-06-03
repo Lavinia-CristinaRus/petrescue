@@ -21,8 +21,6 @@ const Adopt = ({ navigation }) => {
           paddingTop: 20,
           alignItems: 'center',
         }}>
-        <FontAwesome name="plus-square-o" style={{fontSize: 24}} onPress={() => navigation.navigate("addPet")}/>
-        <Feather name="navigation" style={{fontSize: 24}} />
       </View>
 
       <ScrollView>

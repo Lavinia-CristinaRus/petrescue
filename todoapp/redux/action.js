@@ -176,11 +176,13 @@ export const resetPassword = (otp, newPassword) => async (dispatch) => {
 export const addReport = (reportData) => async (dispatch) => {
   try {
     dispatch({ type: "addReportRequest" });
-    const response = await axios.post(`${serverUrl}/addreport`, reportData);
-    console.log(response.data);
+    const response = await axios.post(`${serverUrl}/addreport`, reportData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     dispatch({ type: 'addReportSuccess', payload: response.data });
   } catch (error) {
-    console.error(error);
     dispatch({ type: 'addReportFailure', payload: error.message });
   }
 };
@@ -191,17 +193,23 @@ export const getAllReports = () => async (dispatch) => {
 
     const { data } = await axios.get(`${serverUrl}/getallreports`);
     dispatch({ type: "allReportsSuccess", payload: data });
-    console.log(data);
   } catch (error) {
     dispatch({ type: "allReportsFailure", payload: error.response.data.message });
   }
 };
 
-export const seenPet = (userId) => async (dispatch) => {
+export const seenPet = (reportId) => async (dispatch) => {
   try {
     dispatch({ type: "seenPetRequest" });
 
-    const { data } = await axios.put(`${serverUrl}/seen/${userId}`);
+    const { data } = await axios.put(`${serverUrl}/seen/${reportId}`,
+      { reportId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     dispatch({ type: "seenPetSuccess", payload: data.message });
   } catch (error) {
     dispatch({
@@ -211,11 +219,18 @@ export const seenPet = (userId) => async (dispatch) => {
   }
 };
 
-export const uneenPet = (userId) => async (dispatch) => {
+export const unseenPet = (reportId) => async (dispatch) => {
   try {
     dispatch({ type: "unseenPetRequest" });
 
-    const { data } = await axios.put(`${serverUrl}/unseen/${userId}`);
+    const { data } = await axios.put(`${serverUrl}/unseen/${reportId}`,
+      { reportId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     dispatch({ type: "unseenPetSuccess", payload: data.message });
   } catch (error) {
     dispatch({
@@ -228,11 +243,13 @@ export const uneenPet = (userId) => async (dispatch) => {
 export const addPet = (petData) => async (dispatch) => {
   try {
     dispatch({ type: "addPetRequest" });
-    const response = await axios.post(`${serverUrl}/addpet`, petData);
-    console.log(response.data);
+    const response = await axios.post(`${serverUrl}/addpet`, petData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     dispatch({ type: 'addPetSuccess', payload: response.data });
   } catch (error) {
-    console.error(error);
     dispatch({ type: 'addPetFailure', payload: error.message });
   }
 };
@@ -243,17 +260,23 @@ export const getAllPets = () => async (dispatch) => {
 
     const { data } = await axios.get(`${serverUrl}/getallpets`);
     dispatch({ type: "allPetsSuccess", payload: data });
-    console.log(data);
   } catch (error) {
     dispatch({ type: "allPetsFailure", payload: error.response.data.message });
   }
 };
 
-export const savePet = (userId) => async (dispatch) => {
+export const savePet = (petId) => async (dispatch) => {
   try {
     dispatch({ type: "savePetRequest" });
 
-    const { data } = await axios.put(`${serverUrl}/savepet/${userId}`);
+    const { data } = await axios.put(`${serverUrl}/savepet/${petId}`,
+    { petId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     dispatch({ type: "savePetSuccess", payload: data.message });
   } catch (error) {
     dispatch({
@@ -263,11 +286,18 @@ export const savePet = (userId) => async (dispatch) => {
   }
 };
 
-export const unsavePet = (userId) => async (dispatch) => {
+export const unsavePet = (petId) => async (dispatch) => {
   try {
     dispatch({ type: "unsavePetRequest" });
 
-    const { data } = await axios.put(`${serverUrl}/unsavepet/${userId}`);
+    const { data } = await axios.put(`${serverUrl}/unsavepet/${petId}`,
+      { petId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     dispatch({ type: "unsavePetSuccess", payload: data.message });
   } catch (error) {
     dispatch({
@@ -276,4 +306,3 @@ export const unsavePet = (userId) => async (dispatch) => {
     });
   }
 };
-

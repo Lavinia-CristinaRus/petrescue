@@ -1,8 +1,12 @@
 import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
 
 const petSchema = new mongoose.Schema({
   name: {
+    type: String,
+    required: true,
+  },
+
+  description: {
     type: String,
     required: true,
   },
@@ -23,7 +27,7 @@ const petSchema = new mongoose.Schema({
   },
 
   owner: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
 
@@ -44,13 +48,5 @@ const petSchema = new mongoose.Schema({
 
   otp_expiry: Date,
 });
-
-petSchema.methods.getJWTToken = function () {
-  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
-  });
-};
-
-petSchema.index({ otp_expiry: 1 }, { expireAfterSeconds: 0 });
 
 export const Pet = mongoose.model("Pet", petSchema);

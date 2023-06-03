@@ -13,6 +13,6 @@ const router = express.Router();
 
 router.route("/addpet").post(isAuthenticated, addPet);
 
-router.route("/getallpets").get(getAllPets);
+router.route("/getallpets").get(isAuthenticated, getAllPets);
 
 export default router;

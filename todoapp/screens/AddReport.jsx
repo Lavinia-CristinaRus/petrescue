@@ -1,12 +1,13 @@
-import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity} from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useDispatch} from 'react-redux'
-import { Button } from 'react-native-paper'
-import { addReport, loadUser } from '../redux/action'
+import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button } from 'react-native-paper';
+import { addReport, loadUser } from '../redux/action';
 import MapView, { Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { Dropdown } from 'react-native-element-dropdown';
+import mime from 'mime';
 //to add characteristics
 const AddReport = ({ navigation, route }) => {
     
@@ -14,10 +15,45 @@ const AddReport = ({ navigation, route }) => {
     const [reportName, setReportName] = useState("");
     const [reportDescription, setReportDescription] = useState("");
     const [reportImage, setReportImage] = useState("");
-    const { loading, message, error } = useSelector(state => state.message)
     Location.setGoogleApiKey("AIzaSyAUqWMPfAQS19hQYWNffvRAqm0aHqja9IY");
     const [location, setLocation] = useState(null);
     const [markerPosition, setMarkerPosition] = useState(null);
+    const [animal, setAnimal] = useState("");
+    const [size, setSize] = useState("");
+    const [ageCategory, setAgeCategory] = useState("");
+    const [aggressionLevel, setAggressionLevel] = useState("");
+    const [health, setHealth] = useState("");
+
+    const animals = [
+        { label: 'Dog', value: "dog" },
+        { label: 'Cat', value: "cat" },
+        { label: 'Other', value: "other" },
+    ];
+
+    const sizes = [
+        { label: 'Small', value: "small" },
+        { label: 'Medium', value: "medium" },
+        { label: 'Large', value: "large" },
+        { label: 'Giant', value: "giant" },
+    ];
+
+    const ageCategories = [
+        { label: 'Young', value: "young" },
+        { label: 'Mature', value: "mature" },
+        { label: 'Senior', value: "senior" },
+    ];
+
+    const aggressionLevels = [
+        { label: 'Low', value: "low" },
+        { label: 'Medium', value: "medium" },
+        { label: 'High', value: "high" },
+        { label: 'Unknown', value: "unknown" },
+    ];
+
+    const healthStates = [
+        { label: 'Sick', value: "sick" },
+        { label: 'Healthy', value: "healthy" },
+    ];
 
   useEffect(() => {
     (async () => {
@@ -67,21 +103,31 @@ const AddReport = ({ navigation, route }) => {
     }, [route])
 
     const addReportHandler = async () => {
-        await dispatch(addReport(reportName,reportImage,reportDescription,markerPosition))
+        const locationObject = await Location.reverseGeocodeAsync({
+            longitude: markerPosition.longitude,
+            latitude: markerPosition.latitude
+        });
+        const locationStr = (locationObject[0].street?locationObject[0].street : (locationObject[0].name? locationObject[0].name : "")) + " " + locationObject[0].city+ " " + ", " + locationObject[0].country;
+        const myForm = new FormData();
+        myForm.append("reportName", reportName);
+        myForm.append("reportDescription", reportDescription);
+        myForm.append("animal", animal);
+        myForm.append("size", size);
+        myForm.append("ageCategory", ageCategory);
+        myForm.append("aggressionLevel", aggressionLevel);
+        myForm.append("health", health);
+        myForm.append("location", locationStr);
+        myForm.append("latitude", markerPosition.latitude);
+        myForm.append("longitude", markerPosition.longitude);
+        myForm.append("reportImage", {
+            uri: reportImage,
+            type: mime.getType(reportImage),
+            name: reportImage.split("/").pop()
+        })
+
+        await dispatch(addReport(myForm))
         dispatch(loadUser())
     }
-
-    useEffect(() => {
-        if (error) {
-            alert(error);
-            dispatch({ type: "clearError" });
-            dispatch({ type: "clearError" });
-        }
-        if (message) {
-            alert(message)
-            dispatch({ type: "clearMessage" });
-        }
-    }, [alert, error, message, dispatch])
 
     return (
         <ScrollView style={styles.containerBig}>
@@ -124,6 +170,78 @@ const AddReport = ({ navigation, route }) => {
                 onChangeText={setReportDescription}
             />
         </View>
+        <View style={{height: 15}}></View>
+        <View style={{ width: "75%"}}>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={animals}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Animal"
+                value={animal}
+                onChange={item => {
+                    setAnimal(item.value);
+                }}
+            />
+            <View style={{height: 20}}></View>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={sizes}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Size"
+                value={size}
+                onChange={item => {
+                    setSize(item.value);
+                }}
+            />
+            <View style={{height: 20}}></View>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={ageCategories}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Age category"
+                value={ageCategory}
+                onChange={item => {
+                    setAgeCategory(item.value);
+                }}
+            />
+            <View style={{height: 20}}></View>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={aggressionLevels}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Aggression level"
+                value={aggressionLevel}
+                onChange={item => {
+                    setAggressionLevel(item.value);
+                }}
+            />
+            <View style={{height: 20}}></View>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={healthStates}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Health"
+                value={health}
+                onChange={item => {
+                    setHealth(item.value);
+                }}
+            />
+        </View>
         <View style={{height: 20}}></View>
         <View style={styles.mapContainer}>
         {location && (
@@ -139,6 +257,7 @@ const AddReport = ({ navigation, route }) => {
                 coordinate={markerPosition}
                 draggable={true}
                 onDragEnd={handleMarkerDragEnd}
+                pinColor = {"purple"}
                 />
             )}
             </MapView>
@@ -161,23 +280,23 @@ export default AddReport;
 
 const stylesChoosePhoto = StyleSheet.create({
     container: {
-        width: '75%',
-        height: 200,
+        width: 220,
+        height: 300,
         borderRadius: 15,
         borderColor: 'black',
-        borderWidth: 0.5,
+        borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center'
     },
     image: {
         width: '100%',
-        height: 200,
+        height: 300,
         borderRadius: 15,
     },
     icon: {
-        width: 150,
-        height: 150,
-        marginTop: -200
+        width: 210,
+        height: 210,
+        marginTop: -300
     }
     
 })
@@ -229,7 +348,7 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingLeft: 15,
         borderRadius: 15,
-        marginVertical: 15,
+        marginVertical: 10,
         fontSize: 15,
     },
     btn: {
@@ -249,5 +368,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    dropdown: {
+        borderBottomWidth : 1.0,
+        borderBottomColor: 'grey',
+        padding: 0,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    dropdownPlaceholder:{
+        color: "#b5b5b5",
+    }
 })
 

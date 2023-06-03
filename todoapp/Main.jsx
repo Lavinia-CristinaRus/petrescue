@@ -18,6 +18,7 @@ import ForgetPassword from './screens/ForgetPassword'
 import ResetPassword from './screens/ResetPassword'
 import AddReport from './screens/AddReport'
 import AddPet from './screens/AddPet'
+import AddConfirmation from './screens/AddConfirmation'
 
 const Stack = createNativeStackNavigator()
 
@@ -51,6 +52,7 @@ const Main = () => {
                 <Stack.Screen name='resetpassword' component={ResetPassword} options={{ headerShown: false }} />
                 <Stack.Screen name='addreport' component={AddReport} options={{ headerShown: false }} />
                 <Stack.Screen name='addpet' component={AddPet} options={{ headerShown: false }} />
+                <Stack.Screen name='addconfirmation' component={AddConfirmation} options={{ headerShown: false }} />
 
 
             </Stack.Navigator>

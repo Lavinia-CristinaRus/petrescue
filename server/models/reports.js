@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
+const { ObjectId } = mongoose.Schema;
 
 const reportSchema = new mongoose.Schema({
   name: {
@@ -25,10 +25,11 @@ const reportSchema = new mongoose.Schema({
   area: {
     latitude: { type: Number, required: true},
     longitude: { type: Number, required: true},
+    location: { type: String, required: false},
   },
 
   owner: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
 
@@ -48,8 +49,7 @@ const reportSchema = new mongoose.Schema({
   },
 
   seen: [{
-    user_id: "String",
-    default: null,
+    type: String,
   }],
 
   otp_expiry: {
@@ -57,14 +57,5 @@ const reportSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-
-
-reportSchema.methods.getJWTToken = function () {
-  return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
-  });
-};
-
-reportSchema.index({ otp_expiry: 1 }, { expireAfterSeconds: 0 });
 
 export const Report = mongoose.model("Report", reportSchema);

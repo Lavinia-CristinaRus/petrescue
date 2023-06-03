@@ -1,10 +1,12 @@
-import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity} from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useDispatch} from 'react-redux'
-import { Button } from 'react-native-paper'
-import { addPet, loadUser } from '../redux/action'
-//to add characteristics and area
+import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity, ProgressViewIOSComponent} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button } from 'react-native-paper';
+import { addPet, loadUser } from '../redux/action';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { Dropdown } from 'react-native-element-dropdown';
+import mime from 'mime';
+//to add characteristics
 
 const AddPet = ({ navigation, route }) => {
     
@@ -12,7 +14,44 @@ const AddPet = ({ navigation, route }) => {
     const [petName, setPetName] = useState("");
     const [petDescription, setPetDescription] = useState("");
     const [petImage, setPetImage] = useState("");
+    const [location, setPetLocation] = useState("");
     const { loading, message, error } = useSelector(state => state.message)
+    const [animal, setAnimal] = useState("");
+    const [size, setSize] = useState("");
+    const [ageCategory, setAgeCategory] = useState("");
+    const [aggressionLevel, setAggressionLevel] = useState("");
+    const [health, setHealth] = useState("");
+
+    const animals = [
+        { label: 'Dog', value: "dog" },
+        { label: 'Cat', value: "cat" },
+        { label: 'Other', value: "other" },
+    ];
+
+    const sizes = [
+        { label: 'Small', value: "small" },
+        { label: 'Medium', value: "medium" },
+        { label: 'Large', value: "large" },
+        { label: 'Giant', value: "giant" },
+    ];
+
+    const ageCategories = [
+        { label: 'Young', value: "young" },
+        { label: 'Mature', value: "mature" },
+        { label: 'Senior', value: "senior" },
+    ];
+
+    const aggressionLevels = [
+        { label: 'Low', value: "low" },
+        { label: 'Medium', value: "medium" },
+        { label: 'High', value: "high" },
+        { label: 'Unknown', value: "unknown" },
+    ];
+
+    const healthStates = [
+        { label: 'Sick', value: "sick" },
+        { label: 'Healthy', value: "healthy" },
+    ];
 
     const dispatch = useDispatch()
 
@@ -33,7 +72,22 @@ const AddPet = ({ navigation, route }) => {
     }, [route])
 
     const addPetHandler = async () => {
-        await dispatch(addPet(petName,petImage,petDescription))
+        const myForm = new FormData();
+        myForm.append("petName", petName);
+        myForm.append("petDescription", petDescription);
+        myForm.append("animal", animal);
+        myForm.append("size", size);
+        myForm.append("ageCategory", ageCategory);
+        myForm.append("aggressionLevel", aggressionLevel);
+        myForm.append("health", health);
+        myForm.append("location", location);
+        myForm.append("petImage", {
+            uri: petImage,
+            type: mime.getType(petImage),
+            name: petImage.split("/").pop()
+        })
+
+        await dispatch(addPet(myForm))
         dispatch(loadUser())
     }
 
@@ -50,7 +104,7 @@ const AddPet = ({ navigation, route }) => {
     }, [alert, error, message, dispatch])
 
     return (
-        <ScrollView style={styles.containerBig}>
+        <ScrollView horizontal={false} style={styles.containerBig} keyboardShouldPersistTaps={'handled'}>
         <View style={{justifyContent: 'center'}}>
         <View style={styles.horizontalPaddingView}>
             <View style={styles.container}>
@@ -72,17 +126,16 @@ const AddPet = ({ navigation, route }) => {
                 </>}
             </View>
         </TouchableOpacity>
-        <View style={{height: 40}}></View>
+        <View style={{height: 15}}></View>
         <View style={{alignItems: "center"}}>
         <View style={{ width: "75%"}}>
             <TextInput
                 style={styles.input}
-                placeholder="Name"
+                placeholder="Title"
                 value={petName}
                 onChangeText={setPetName}
             />
         </View>
-        <View style={{height: 40}}></View>
         <View style={{ width: "75%"}}>
             <TextInput
                 style={styles.input}
@@ -91,12 +144,107 @@ const AddPet = ({ navigation, route }) => {
                 onChangeText={setPetDescription}
             />
         </View>
-        <View style={{height: 40}}></View>
+        <View style={{height: 20}}></View>
+        <View style={{ width: "75%"}}>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={animals}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Animal"
+                value={animal}
+                onChange={item => {
+                    setAnimal(item.value);
+                }}
+            />
+            <View style={{height: 20}}></View>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={sizes}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Size"
+                value={size}
+                onChange={item => {
+                    setSize(item.value);
+                }}
+            />
+            <View style={{height: 20}}></View>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={ageCategories}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Age category"
+                value={ageCategory}
+                onChange={item => {
+                    setAgeCategory(item.value);
+                }}
+            />
+            <View style={{height: 20}}></View>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={aggressionLevels}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Aggression level"
+                value={aggressionLevel}
+                onChange={item => {
+                    setAggressionLevel(item.value);
+                }}
+            />
+            <View style={{height: 20}}></View>
+            <Dropdown
+                style={styles.dropdown}
+                placeholderStyle={styles.dropdownPlaceholder}
+                data={healthStates}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Health"
+                value={health}
+                onChange={item => {
+                    setHealth(item.value);
+                }}
+            />
+        </View>
+        <View style={{height: 20}}></View>
+        <View style={{flex: 1,width: "80%", alignItems: "center"}}>
+            <ScrollView horizontal={true} style={{ width: "100%", height:'100%'}} keyboardShouldPersistTaps={'handled'}>
+                <GooglePlacesAutocomplete
+                    placeholder = "Insert area for picking up the pet (city, region)"
+                    debounce={400}
+                    query = {{
+                        key:"AIzaSyAUqWMPfAQS19hQYWNffvRAqm0aHqja9IY",
+                    }}
+                    styles={{
+                    textInputContainer: {
+                        borderBottomWidth : 1.0,
+                        borderBottomColor: 'grey',
+                        padding: 0,
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }
+                    }}
+                    onPress={item=>{setPetLocation(item.description)}}
+                />
+            </ScrollView>
+        </View>
+        <View style={{height: 30}}></View>
         <Button
             style={styles.btn}
             onPress={addPetHandler}>
             <Text style={{ color: "#fff" }}>Add Pet</Text>
         </Button>
+        <View style={{height: 80}}></View>
         </View>
         </View>
         </ScrollView>
@@ -107,8 +255,8 @@ export default AddPet;
 
 const stylesChoosePhoto = StyleSheet.create({
     container: {
-        width: '75%',
-        height: 200,
+        width: 220,
+        height: 300,
         borderRadius: 15,
         borderColor: 'black',
         borderWidth: 1,
@@ -117,13 +265,13 @@ const stylesChoosePhoto = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: 200,
+        height: 300,
         borderRadius: 15,
     },
     icon: {
-        width: 150,
-        height: 150,
-        marginTop: -200
+        width: 210,
+        height: 210,
+        marginTop: -300
     }
     
 })
@@ -175,7 +323,7 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingLeft: 15,
         borderRadius: 15,
-        marginVertical: 15,
+        marginVertical: 10,
         fontSize: 15,
     },
     btn: {
@@ -183,5 +331,15 @@ const styles = StyleSheet.create({
         padding: 5,
         width: "70%",
     },
+    dropdown:{
+        borderBottomWidth : 1.0,
+        borderBottomColor: 'grey',
+        padding: 0,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    dropdownPlaceholder:{
+        color: "#b5b5b5",
+    }
 })
 

@@ -39,8 +39,7 @@ const userSchema = new mongoose.Schema({
   otp: Number,
   otp_expiry: Date,
   savedPets: [{
-    petId: "String",
-    required: false
+    type: "String",
   }],
   resetPasswordOtp: Number,
   resetPasswordOtpExpiry: Date,

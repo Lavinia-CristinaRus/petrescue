@@ -153,7 +153,7 @@ export const reportReducer = createReducer(
     addReportSuccess: (state, action) => {
       state.loading = false;
       // state.isAuthenticated = true;
-      state.post = action.payload;
+      state.message = action.payload;
       // state.message = action.payload.message;
     },
     addReportFailure: (state, action) => {
@@ -166,7 +166,7 @@ export const reportReducer = createReducer(
     allReportsSuccess: (state, action) => {
       state.loading = false;
       // state.isAuthenticated = true;
-      state.post = action.payload;
+      state.report = action.payload;
       // state.message = action.payload.message;
     },
     allReportsFailure: (state, action) => {
@@ -200,7 +200,13 @@ export const reportReducer = createReducer(
       state.isAuthenticated = false;
       state.error = action.payload;
     },
+    clearError: (state) => {
+      state.error = null;
+    },
 
+    clearMessage: (state) => {
+      state.message = null;
+    },
   },
 );
 
@@ -213,7 +219,7 @@ export const petReducer = createReducer(
     addPetSuccess: (state, action) => {
       state.loading = false;
       // state.isAuthenticated = true;
-      state.pet = action.payload;
+      state.message = action.payload;
       // state.message = action.payload.message;
     },
     addPetFailure: (state, action) => {
@@ -226,7 +232,7 @@ export const petReducer = createReducer(
     allPetsSuccess: (state, action) => {
       state.loading = false;
       // state.isAuthenticated = true;
-      state.post = action.payload;
+      state.pet = action.payload;
       // state.message = action.payload.message;
     },
     allPetsFailure: (state, action) => {
@@ -260,6 +266,12 @@ export const petReducer = createReducer(
       state.isAuthenticated = false;
       state.error = action.payload;
     },
+    clearError: (state) => {
+      state.error = null;
+    },
 
+    clearMessage: (state) => {
+      state.message = null;
+    },
   },
 );
