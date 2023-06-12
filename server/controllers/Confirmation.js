@@ -1,4 +1,5 @@
 import { Confirmation } from "../models/confirmations.js";
+import { Report } from "../models/reports.js";
 //import { sendMail } from "../utils/sendMail.js";
 //utils/sendToken.js";
 import cloudinary from "cloudinary";
@@ -11,7 +12,6 @@ export const addConfirmation = async (req, res) => {
     const avatar = req.files.confirmationImage.tempFilePath;
 
     if (!owner.verified) {
-      console.log("cica userul nu e verified");
       return res
         .status(400)
         .json({ success: false, messageConf: "Please verify your account first!" });
@@ -28,7 +28,6 @@ export const addConfirmation = async (req, res) => {
       },
       owner: owner._id,
       report: reportId,
-      otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });
     res.status(200).json({ success: true, messageConf: "Confirmation request created successfully" });
   } catch (error) {
@@ -40,62 +39,91 @@ export const addConfirmation = async (req, res) => {
 export const retractConfirmation = async (req, res) => {
   try {
 
-    const confirmation = await Confirmation.findById(req.confirmation._id);
+    const confirmation = await Confirmation.findById(req.body.confirmationId);
 
     confirmation.valid = false;
 
     await confirmation.save();
 
-    sendToken(res, confirmation, 200, "Confirmation request obsoleted successfully");
+    return res.status(200).json({ success: true, message: "Confirmation request retracted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const acceptConfirmation = async (req, res) => {
+export const confirmRequest = async (req, res) => {
   try {
 
-    const confirmation = await Confirmation.findById(req.confirmation._id);
+    const confirmation = await Confirmation.findById(req.body.confirmationId);
 
     confirmation.accepted = true;
 
     await confirmation.save();
-
-    sendToken(res, confirmation, 200, "Confirmation request accepted successfully");
+    const confirmations = await Confirmation.find({Report:confirmation.report});
+    for(let i=0; i<confirmations.length;i++) {
+      if(!confirmations[i]._id.equals(confirmation._id)) {
+        confirmations[i].accepted = false;
+        await confirmations[i].save();
+      }
+    }
+    const report  = await Report.findById(confirmation.report);
+    report.solved = true;
+    await report.save();
+    return res.status(200).send(confirmation);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const rejectConfirmation = async (req, res) => {
+export const denyRequest = async (req, res) => {
   try {
 
-    const confirmation = await Confirmation.findById(req.confirmation._id);
+    const confirmation = await Confirmation.findById(req.body.confirmationId);
 
     confirmation.accepted = false;
 
     await confirmation.save();
 
-    sendToken(res, confirmation,  200, "Confirmation request rejected successfully");
+    res.status(200).json({ success: true, message: "Confirmation request rejected successfully"});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const getConfirmationsByReport = async (req, res) => {
-  try {
-    const confirmation = await Confirmation.find({report: req.report._id}).populate('owner',['name', 'avatar']);
-    sendToken(res, confirmation, 200);
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-}
-
 export const getConfirmationsByUser = async (req, res) => {
   try {
-    const confirmation = await Confirmation.find({owner: req.user._id}).populate('pet',['name', 'avatar']);
-    sendToken(res, confirmation, 200);
+    // const confirmation = await Confirmation.find({owner: req.user._id}).populate('report',['name', 'avatar', 'description','characteristics', 'area']);
+    
+    const confirmation = await Confirmation.find({owner: req.user._id})
+      .populate({
+        path: 'report',
+        select: 'name avatar description characteristics area owner seen',
+        populate: {
+          path : 'owner',
+          select: 'name avatar'
+        }
+      })
+      .populate('owner',['name', 'avatar']);
+      console.log(confirmation);
+    return res.status(200).send(confirmation);
   } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getReceivedConfirmations = async (req, res) => {
+  try {
+    const reports = await Report.find({owner: req.user._id}).populate('owner',['name', 'avatar']);
+    let confirmations = [];
+    for(let i=0;i<reports.length;i++){
+      const confirmation = await Confirmation.find({report: reports[i]._id }).populate('owner',['name', 'avatar']);
+      confirmations.push(confirmation);
+    }
+    return res.status(200).send({reports, confirmations});
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 }

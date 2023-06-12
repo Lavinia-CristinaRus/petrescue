@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch} from 'react-redux'
 import { Button } from 'react-native-paper'
-import { addRequest, loadUser } from '../redux/action'
+import { addRequest, getSentAdoptionRequests } from '../redux/action'
 
 const AddRequest = ({ navigation, route }) => {
     
@@ -20,7 +20,7 @@ const AddRequest = ({ navigation, route }) => {
         myForm.append("message", requestMessage);
         myForm.append("petId", petId);
         await dispatch(addRequest(myForm))
-        dispatch(loadUser())
+        dispatch(getSentAdoptionRequests())
     }
 
     useEffect(() => {
@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 15,
         fontSize: 15,
-        content: 'fill',
     },
     btn: {
         backgroundColor: "#759",

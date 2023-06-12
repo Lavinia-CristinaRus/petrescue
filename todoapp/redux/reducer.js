@@ -299,6 +299,72 @@ export const confirmationReducer = createReducer(
     clearMessage: (state) => {
       state.messageConf = null;
     },
+    getSentConfirmationsRequest: (state) => {
+      state.loading = true;
+    },
+    getSentConfirmationsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.confirmation = action.payload;
+      // state.message = action.payload.message;
+    },
+    getSentConfirmationsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    getReceivedConfirmationsRequest: (state) => {
+      state.loading = true;
+    },
+    getReceivedConfirmationsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.receivedreports = action.payload.reports;
+      state.receivedconfirmations = action.payload.confirmations;
+      // state.message = action.payload.message;
+    },
+    getReceivedConfirmationsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    retractConfirmationRequest: (state) => {
+      state.loading = true;
+    },
+    retractConfirmationSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    retractConfirmationFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    confirmRequestRequest: (state) => {
+      state.loading = true;
+    },
+    confirmRequestSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    confirmRequestFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    denyRequestRequest: (state) => {
+      state.loading = true;
+    },
+    denyRequestSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    denyRequestFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 );
 
@@ -324,6 +390,72 @@ export const adoptionReducer = createReducer(
 
     clearMessage: (state) => {
       state.message = null;
+    },
+    getSentRequestsRequest: (state) => {
+      state.loading = true;
+    },
+    getSentRequestsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.request = action.payload;
+      // state.message = action.payload.message;
+    },
+    getSentRequestsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    retractRequestRequest: (state) => {
+      state.loading = true;
+    },
+    retractRequestSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    retractRequestFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    getReceivedRequestsRequest: (state) => {
+      state.loading = true;
+    },
+    getReceivedRequestsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.receivedpets = action.payload.pets;
+      state.receivedrequests = action.payload.requests;
+      // state.message = action.payload.message;
+    },
+    getReceivedRequestsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    acceptRequestRequest: (state) => {
+      state.loading = true;
+    },
+    acceptRequestSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    acceptRequestFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    rejectRequestRequest: (state) => {
+      state.loading = true;
+    },
+    rejectRequestSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    rejectRequestFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     },
   },
 );

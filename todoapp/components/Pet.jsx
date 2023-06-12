@@ -3,16 +3,13 @@ import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector} from 'react-redux';
-import {getAllPets} from '../redux/action';
 import { Button } from 'react-native-paper';
+import AdoptionRequest from './AdoptionRequest';
 
-const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave, adoptHandler}) => {
+const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave, adoptHandler, requests}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const [savedByUser, setSaved] = useState(saved);
-  useEffect(() => {
-    dispatch(getAllPets());
-  }, [savedByUser], );
 
   return (
     <View style={styles.customView}
@@ -67,7 +64,7 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
         }}>
           <Text style={{fontSize: 14}}>{location}</Text>
       </View>
-      <View
+      {requests?<></>:<View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -90,13 +87,32 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
             Add pet to favourites!
           </Text>
         </View>
-      </View>
+      </View>}
       <View style={{height: 10}}></View>
-      <Button
-          style={styles.btn}
-          onPress={adoptHandler}>
-          <Text style={{ color: "#fff" }}>Adopt!</Text>
-      </Button>
+      {requests?
+        (requests.slice(0).reverse().map((data, index) => {
+          return(
+            <View key={index}>
+              <View style={{height: 20}}></View>
+              <AdoptionRequest
+                _id = {data._id}
+                description = {data.message}
+                ownerId = {data.owner._id}
+                ownerAvatar = {data.owner.avatar.url}
+                ownerName = {data.owner.name}
+                valid = {data.valid}
+                accepted = {data.accepted}
+              />
+            </View>
+          )
+        }))
+      :(ownerId != user.user._id?
+        <Button
+            style={styles.btn}
+            onPress={adoptHandler}>
+            <Text style={{ color: "#fff" }}>Adopt!</Text>
+        </Button>:<></>)
+      }
       <View style={{height: 15}}></View>
     </View>
   );

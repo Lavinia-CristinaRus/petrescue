@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch} from 'react-redux'
 import { Button } from 'react-native-paper'
-import { addConfirmation, loadUser } from '../redux/action'
+import { addConfirmation, getSentConfirmationRequests } from '../redux/action'
 import mime from 'mime'
 
 const AddConfirmation = ({ navigation, route }) => {
@@ -43,7 +43,7 @@ const AddConfirmation = ({ navigation, route }) => {
         })
 
         await dispatch(addConfirmation(myForm))
-        dispatch(loadUser())
+        dispatch(getSentConfirmationRequests())
     }
 
     return (
@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 15,
         fontSize: 15,
-        content: 'fill',
     },
     btn: {
         backgroundColor: "#759",

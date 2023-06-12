@@ -95,7 +95,6 @@ export const seenBy = async (req,res) => {
     const user = req.user._id;
     const reportId = req.body.reportId;
     const report = await Report.findById(reportId);
-    console.log(report);
     report.seen.push(user);
     await report.save();
 
@@ -120,22 +119,13 @@ export const unseenBy = async (req,res) => {
 
 export const getAllReports = async (req, res) => {
   try {
-    const reports = await Report.find().populate('owner',['name', 'avatar']);
+    const reports = await Report.find({solved: false, valid: true}).populate('owner',['name', 'avatar']);
     if(reports) {
       return res.status(200).send(reports);
     }
     else {
       return res.status(200).json({success: true, message: "No reports yet"});
     }
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-}
-
-export const getReportsByUser = async (req, res) => {
-  try {
-    const report = await Report.find({owner: req.user._id});
-    // sendToken(res, report, 200);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

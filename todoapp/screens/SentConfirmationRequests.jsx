@@ -1,16 +1,17 @@
 import React, { useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity} from 'react-native';
-import {getAllReports} from '../redux/action';
+import {getSentConfirmationRequests} from '../redux/action';
 import { useDispatch, useSelector } from 'react-redux';
-import Report from './../components/Report.jsx'
+import Report from '../components/Report.jsx'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { SearchBar } from 'react-native-elements';
 import {seenPet, unseenPet} from '../redux/action';
-
-const Reports = ({ navigation, route}) => {
+//for sent requests, the requests can be retrieved using find({owner:userId}) and reports info filled using populate
+//for received requests, the reports will be retrieved using find({owner:userId}) and for each report the requests will be retrieved using find({report:reportId})
+const SentConfirmaionRequests = ({ navigation, route}) => {
     const dispatch = useDispatch();
     const [keyword, setKeyword] = useState("");
-    const reports = useSelector(state => state.report.report);
+    const reports = useSelector(state => state.confirmation.confirmation);
     const { message, error } = useSelector(state => state.report);
     const { messageConf, errorConf } = useSelector(state => state.confirmation);
     const user = useSelector(state => state.auth);
@@ -38,7 +39,7 @@ const Reports = ({ navigation, route}) => {
     }, [alert, error, message, dispatch])
 
     useEffect(() => {
-      dispatch(getAllReports());
+      dispatch(getSentConfirmationRequests());
     }, []);
 
     return (
@@ -52,51 +53,47 @@ const Reports = ({ navigation, route}) => {
       />
       </View>
       <ScrollView style={{height:'90%'}}>
-       <View style={{flexDirection: 'row', alignItems: 'flex-start', width:'100%', height:47}}>
+      <View style={{flexDirection: 'row', alignItems: 'flex-start', width:'100%', height:47}}>
           <TouchableOpacity
               style={{alignItems: 'center', width:200, height:47,backgroundColor:'#cbe',padding: 5, borderWidth:2, borderColor:'#dcf'}}
-              onPress={() => navigation.navigate("sentconfirmationrequests")}
+              onPress={() => navigation.navigate("reports")}
           >
-            <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold', color: '#548',}}>VIEW SENT{'\n'}CONFIRMATION REQUESTS</Text>
+            <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold', color: '#548'}}>VIEW STRAY{'\n'}PET REPORTS</Text>
           </TouchableOpacity>
           <TouchableOpacity
               style={{alignItems: 'center', width:200, height:47,backgroundColor:'#cbe', padding: 5, borderWidth:2, borderColor:'#dcf'}}
               onPress={() => navigation.navigate("receivedconfirmationrequests")}
           >
-            <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold', color: '#548',}}>VIEW CONFIRMATION{'\n'}REQUESTS RECEIVED</Text>
+            <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold', color: '#548'}}>VIEW CONFIRMATION{'\n'}REQUESTS RECEIVED</Text>
           </TouchableOpacity>
         </View>
         {reports?.slice(0).reverse().map((data, index) => {
-
-            const handleSeen = async (id) => {
-              await dispatch(seenPet(id));
-              dispatch(getAllReports());
-            }
-            const handleUnseen = async (id) => {
-              await dispatch(unseenPet(id));
-              dispatch(getAllReports());
-            }
-            const pickUpHandler = async () => {
-              navigation.navigate("addconfirmation",{reportId:data._id});
-            }
+          var confirms = [];
+          var conf = {_id: data._id,
+            createdAt: data.createdAt,
+            avatar: data.avatar,
+            description: data.description,
+            owner: data.owner,
+            valid: data.valid,
+            accepted: data.accepted
+          };
+          confirms.push(conf);
 
             return(
               <View key={index}>
                 <View style={{height: 20}}></View>
                 <Report
-                  _id = {data._id}
-                  name = {data.name}
-                  description = {data.description}
-                  characteristics = {data.characteristics}
-                  avatar = {data.avatar.url}
-                  location = {data.area.location}
-                  ownerId = {data.owner._id}
-                  ownerAvatar = {data.owner.avatar.url}
-                  ownerName = {data.owner.name}
-                  seen ={data.seen}
-                  handleSeen = {handleSeen}
-                  handleUnseen = {handleUnseen}
-                  pickUpHandler = {pickUpHandler}
+                  _id = {data.report._id}
+                  name = {data.report.name}
+                  description = {data.report.description}
+                  characteristics = {data.report.characteristics}
+                  avatar = {data.report.avatar.url}
+                  location = {data.report.area.location}
+                  ownerId = {data.report.owner._id}
+                  ownerAvatar = {data.report.owner.avatar.url}
+                  ownerName = {data.report.owner.name}
+                  seen ={data.report.seen}
+                  confirmations = {confirms}
                 />
               </View>
             )
@@ -121,4 +118,4 @@ const Reports = ({ navigation, route}) => {
       
         
     )};
-export default Reports;
+export default SentConfirmaionRequests;

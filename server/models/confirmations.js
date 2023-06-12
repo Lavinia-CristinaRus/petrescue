@@ -36,8 +36,6 @@ const confirmationSchema = new mongoose.Schema({
     type: Boolean,
     required:false,
   },
-
-  otp_expiry: Date,
 });
 
 
@@ -46,7 +44,5 @@ confirmationSchema.methods.getJWTToken = function () {
     expiresIn: process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
   });
 };
-
-confirmationSchema.index({ otp_expiry: 1 }, { expireAfterSeconds: 0 });
 
 export const Confirmation = mongoose.model("Confirmation", confirmationSchema);

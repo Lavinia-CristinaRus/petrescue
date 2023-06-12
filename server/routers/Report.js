@@ -6,7 +6,6 @@ import {
   seenBy,
   unseenBy,
   getAllReports,
-  getReportsByUser
 } from "../controllers/Report.js";
 import { isAuthenticated } from "../middleware/auth.js";
 

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
-import { addPet, loadUser } from '../redux/action';
+import { addPet, getAllPets } from '../redux/action';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Dropdown } from 'react-native-element-dropdown';
 import mime from 'mime';
@@ -88,7 +88,7 @@ const AddPet = ({ navigation, route }) => {
         })
 
         await dispatch(addPet(myForm))
-        dispatch(loadUser())
+        dispatch(getAllPets())
     }
 
     useEffect(() => {
@@ -327,7 +327,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 10,
         fontSize: 15,
-        content: 'fill',
     },
     btn: {
         backgroundColor: "#759",

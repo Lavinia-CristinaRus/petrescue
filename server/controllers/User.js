@@ -249,7 +249,6 @@ export const savePet = async (req,res) => {
   try {
     const user = await User.findById(req.user._id);
     const pet = req.body.petId;
-    console.log(user);
     user.savedPets.push(pet);
     await user.save();
 
@@ -263,7 +262,6 @@ export const unsavePet = async (req,res) => {
   try {
     const user = await User.findById(req.user._id);
     const pet = req.body.petId;
-    console.log(user);
     user.savedPets.pop(pet);
     await user.save();
 

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
-import { addReport, loadUser } from '../redux/action';
+import { addReport, getAllReports } from '../redux/action';
 import MapView, { Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -126,7 +126,7 @@ const AddReport = ({ navigation, route }) => {
         })
 
         await dispatch(addReport(myForm))
-        dispatch(loadUser())
+        dispatch(getAllReports())
     }
 
     return (
@@ -352,7 +352,6 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginVertical: 10,
         fontSize: 15,
-        content: 'fill',
     },
     btn: {
         backgroundColor: "#759",

@@ -1,18 +1,17 @@
 import React, { useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity} from 'react-native';
-import {getAllReports} from '../redux/action';
+import {getReceivedConfirmations} from '../redux/action';
 import { useDispatch, useSelector } from 'react-redux';
-import Report from './../components/Report.jsx'
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Report from '../components/Report.jsx'
 import { SearchBar } from 'react-native-elements';
-import {seenPet, unseenPet} from '../redux/action';
-
-const Reports = ({ navigation, route}) => {
+//for sent requests, the requests can be retrieved using find({owner:userId}) and reports info filled using populate
+//for received requests, the reports will be retrieved using find({owner:userId}) and for each report the requests will be retrieved using find({report:reportId})
+const ReceivedConfirmaionRequests = ({ navigation, route}) => {
     const dispatch = useDispatch();
     const [keyword, setKeyword] = useState("");
-    const reports = useSelector(state => state.report.report);
+    const reports = useSelector(state => state.confirmation.receivedreports);
+    const confirmations = useSelector(state => state.confirmation.receivedconfirmations);
     const { message, error } = useSelector(state => state.report);
-    const { messageConf, errorConf } = useSelector(state => state.confirmation);
     const user = useSelector(state => state.auth);
 
     useEffect(() => {
@@ -38,47 +37,35 @@ const Reports = ({ navigation, route}) => {
     }, [alert, error, message, dispatch])
 
     useEffect(() => {
-      dispatch(getAllReports());
+      dispatch(getReceivedConfirmations());
     }, []);
 
     return (
       <View>
       <View>
       <SearchBar
-        placeholder="Search through stray pets reports..."
+        placeholder="Search through stray pets you reported..."
         value={""}
         containerStyle={{backgroundColor: "#759"}}
         inputContainerStyle={{borderRadius: 50, backgroundColor: '#648'}}
       />
       </View>
       <ScrollView style={{height:'90%'}}>
-       <View style={{flexDirection: 'row', alignItems: 'flex-start', width:'100%', height:47}}>
+      <View style={{flexDirection: 'row', alignItems: 'flex-start', width:'100%', height:47}}>
           <TouchableOpacity
               style={{alignItems: 'center', width:200, height:47,backgroundColor:'#cbe',padding: 5, borderWidth:2, borderColor:'#dcf'}}
               onPress={() => navigation.navigate("sentconfirmationrequests")}
           >
-            <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold', color: '#548',}}>VIEW SENT{'\n'}CONFIRMATION REQUESTS</Text>
+            <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold', color: '#548'}}>VIEW SENT{'\n'}CONFIRMATION REQUESTS</Text>
           </TouchableOpacity>
           <TouchableOpacity
               style={{alignItems: 'center', width:200, height:47,backgroundColor:'#cbe', padding: 5, borderWidth:2, borderColor:'#dcf'}}
-              onPress={() => navigation.navigate("receivedconfirmationrequests")}
+              onPress={() => navigation.navigate("reports")}
           >
-            <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold', color: '#548',}}>VIEW CONFIRMATION{'\n'}REQUESTS RECEIVED</Text>
+            <Text style={{fontSize: 13, textAlign: 'center', fontWeight:'bold', color: '#548'}}>VIEW STRAY{'\n'}PET REPORTS</Text>
           </TouchableOpacity>
         </View>
         {reports?.slice(0).reverse().map((data, index) => {
-
-            const handleSeen = async (id) => {
-              await dispatch(seenPet(id));
-              dispatch(getAllReports());
-            }
-            const handleUnseen = async (id) => {
-              await dispatch(unseenPet(id));
-              dispatch(getAllReports());
-            }
-            const pickUpHandler = async () => {
-              navigation.navigate("addconfirmation",{reportId:data._id});
-            }
 
             return(
               <View key={index}>
@@ -94,31 +81,14 @@ const Reports = ({ navigation, route}) => {
                   ownerAvatar = {data.owner.avatar.url}
                   ownerName = {data.owner.name}
                   seen ={data.seen}
-                  handleSeen = {handleSeen}
-                  handleUnseen = {handleUnseen}
-                  pickUpHandler = {pickUpHandler}
+                  confirmations = {confirmations?confirmations[index]:[]}
                 />
               </View>
             )
           })}
-          
       </ScrollView>
-      <View
-        style={{
-          paddingTop: 10,
-          alignItems: 'center',
-          width:70,
-          height:80,
-          borderRadius:80,
-          backgroundColor:"#ffff",
-          alignSelf:'flex-end',
-          position: 'absolute',
-          bottom: -25, zIndex: 1
-        }}>
-        <Icon name="plus-circle" size={45} color="#759" onPress={() => navigation.navigate("addreport")}/>
-      </View>
       </View>
       
         
     )};
-export default Reports;
+export default ReceivedConfirmaionRequests;

@@ -3,17 +3,14 @@ import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector} from 'react-redux';
-import {getAllReports} from '../redux/action';
 import { Button } from 'react-native-paper';
+import ConfirmationRequest from './ConfirmationRequest';
 
-const Report = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, seen, handleSeen, handleUnseen, pickUpHandler}) => {
+const Report = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, seen, handleSeen, handleUnseen, pickUpHandler, confirmations}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const isPetSeen = (id) => {return seen?.includes(id)};
   const [seenByUser, setSeen] = useState(isPetSeen(user.user._id));
-  useEffect(() => {
-    dispatch(getAllReports());
-  }, [seenByUser], );
 
   return (
     <View style={styles.customView}
@@ -70,6 +67,7 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
             {location}
           </Text>
       </View>
+      {confirmations?<></>:
       <View
         style={{
           flexDirection: 'row',
@@ -93,13 +91,32 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
             Seen by {seenByUser ? "you"+ ((seen.length-1>0)? " and "+ (seen.length-1)+" others" :""):seen.length} 
           </Text>
         </View>
-      </View>
+      </View>}
       <View style={{height: 10}}></View>
-      <Button
-          style={styles.btn}
-          onPress={pickUpHandler}>
-          <Text style={{ color: "#fff" }}>Pick up!</Text>
-      </Button>
+      {confirmations?
+        (confirmations.slice(0).reverse().map((data, index) => {
+          return(
+            <View key={index}>
+              <View style={{height: 20}}></View>
+              <ConfirmationRequest
+                _id = {data._id}
+                avatar = {data.avatar.url}
+                description = {data.description}
+                ownerId = {data.owner._id}
+                ownerAvatar = {data.owner.avatar.url}
+                ownerName = {data.owner.name}
+                valid = {data.valid}
+                accepted = {data.accepted}
+              />
+            </View>
+          )
+        }))
+      :(ownerId != user.user._id?<Button
+        style={styles.btn}
+        onPress={pickUpHandler}>
+        <Text style={{ color: "#fff" }}>Pick up!</Text>
+        </Button>:<></>
+      )}
       <View style={{height: 15}}></View>
     </View>
   );

@@ -1,4 +1,5 @@
 import { Request } from "../models/requests.js";
+import { Pet } from "../models/pets.js";
 //import { sendMail } from "../utils/sendMail.js";
 //utils/sendToken.js";
 import cloudinary from "cloudinary";
@@ -6,7 +7,6 @@ import fs from "fs";
 
 export const addRequest = async (req, res) => {
   try {
-    console.log(req.body)
     const { message, petId } = req.body;
     const owner = req.user;
 
@@ -20,7 +20,6 @@ export const addRequest = async (req, res) => {
       message,
       owner:owner._id,
       pet: petId,
-      otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });
 
     res.status(200).json({ success: true, message: "Adoption request created successfully" });
@@ -32,15 +31,14 @@ export const addRequest = async (req, res) => {
 
 export const retractRequest = async (req, res) => {
   try {
-
-    const request = await Request.findById(req.request._id);
-
+    const request = await Request.findById(req.body.requestId);
     request.valid = false;
 
     await request.save();
 
-    sendToken(res, request, 200, "Request obsoleted successfully");
+    return res.status(200).json({ success: true, message: "Adoption request retracted successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -48,46 +46,69 @@ export const retractRequest = async (req, res) => {
 export const acceptRequest = async (req, res) => {
   try {
 
-    const request = await Request.findById(req.request._id);
+    const request = await Request.findById(req.body.requestId);
 
     request.accepted = true;
 
     await request.save();
-
-    sendToken(res, request, 200, "Request accepted successfully");
+    const requests = await Request.find({pet:request.pet});
+    for(let i=0; i<requests.length;i++) {
+      if(!requests[i]._id.equals(request._id)) {
+        requests[i].accepted = false;
+        await requests[i].save();
+      }
+    }
+    const pet  = await Pet.findById(request.pet);
+    pet.solved = true;
+    await pet.save();
+    return res.status(200).send(request);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const rejectRequest = async (req, res) => {
   try {
-
-    const request = await Request.findById(req.request._id);
-
+    const request = await Request.findById(req.body.requestId);
     request.accepted = false;
 
     await request.save();
 
-    sendToken(res, request, 200, "Request rejected successfully");
+    return res.status(200).send(request);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const getRequestsByUser = async (req, res) => {
   try {
-    const request = await Request.find({owner: req.user._id}).populate('pet',['name', 'avatar']);
-    sendToken(res, request, 200);
+    const request = await Request.find({owner: req.user._id})
+      .populate({
+        path: 'pet',
+        select: 'name avatar description characteristics area owner',
+        populate: {
+          path : 'owner',
+          select: 'name avatar'
+        }
+      })
+      .populate('owner',['name', 'avatar']);
+    return res.status(200).send(request);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
-}
+};
 
-export const getRequestsByPet = async (req, res) => {
+export const getReceivedRequests = async (req, res) => {
   try {
-    const request = await Request.find({pet: req.pet._id}).populate('owner',['name', 'avatar']);
-    sendToken(res, request, 200);
+    const pets = await Pet.find({owner: req.user._id}).populate('owner',['name', 'avatar']);
+    let requests = [];
+    for(let i=0;i<pets.length;i++){
+      const request = await Request.find({pet: pets[i]._id }).populate('owner',['name', 'avatar']);
+      requests.push(request);
+    }
+    return res.status(200).send({pets, requests});
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

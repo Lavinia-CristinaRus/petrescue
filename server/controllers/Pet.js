@@ -85,39 +85,15 @@ export const updatePet = async (req, res) => {
   }
 };
 
-export const adoptPet = async () => {
-  try {
-
-    const pet = await Pet.findById(req.pet._id);
-
-    pet.solved = true;
-
-    await pet.save();
-
-    sendToken(res, report, 200, "Adoption announcment closed successfully");
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
 export const getAllPets = async (req, res) => {
   try {
-    const pets = await Pet.find().populate('owner',['name', 'avatar']);
+    const pets = await Pet.find({solved: false, valid: true}).populate('owner',['name', 'avatar']);
     if(pets) {
       return res.status(200).send(pets);
     }
     else {
       return res.status(200).json({success: true, message: "No pets available for adoption yet"});
     }
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-}
-
-export const getPetsByUser = async (req, res) => {
-  try {
-    const pet = await Pet.find({owner: req.user._id});
-    sendToken(res, pet, 200);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

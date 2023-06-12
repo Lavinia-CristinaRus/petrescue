@@ -336,3 +336,198 @@ export const addRequest = (requestData) => async (dispatch) => {
     dispatch({ type: 'addRequestFailure', payload: error.message });
   }
 };
+
+export const getSentConfirmationRequests = () => async (dispatch) => {
+  try {
+    dispatch({type: "getSentConfirmationsRequest"});
+    const { data } = await axios.get(`${serverUrl}/getsentconfirmations`);
+    dispatch({ type: "getSentConfirmationsSuccess", payload: data });
+  } catch (error) {
+    dispatch({ type: "getSentConfirmationsFailure", payload: error.response.data.message });
+  }
+};
+
+export const getSentAdoptionRequests = () => async (dispatch) => {
+  try {
+    dispatch({type: "getSentRequestsRequest"});
+    const { data } = await axios.get(`${serverUrl}/getsentrequests`);
+    dispatch({ type: "getSentRequestsSuccess", payload: data });
+  } catch (error) {
+    dispatch({ type: "getSentRequestsFailure", payload: error.response.data.message });
+  }
+};
+
+export const retractAdoptionRequest = (requestId) => async (dispatch) => {
+  try {
+    dispatch({ type: "retractRequestRequest" });
+
+    const { data } = await axios.put(`${serverUrl}/retractrequest/${requestId}`,
+      { requestId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "retractRequestSuccess", payload: data.message });
+  } catch (error) {
+    dispatch({
+      type: "retractRequestFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const getReceivedRequests = (petId) => async (dispatch) => {
+  try {
+    dispatch({ type: "getReceivedRequestsRequest" });
+
+    const { data } = await axios.get(`${serverUrl}/getreceivedrequests`,
+      { petId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "getReceivedRequestsSuccess", payload: data });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "getReceivedRequestsFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const acceptAdoptionRequest = (requestId) => async (dispatch) => {
+  try {
+    dispatch({ type: "acceptRequestRequest" });
+
+    const { data } = await axios.put(`${serverUrl}/acceptrequest/${requestId}`,
+      { requestId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "acceptRequestSuccess", payload: data.message });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "acceptRequestFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const rejectAdoptionRequest = (requestId) => async (dispatch) => {
+  try {
+    dispatch({ type: "rejectRequestRequest" });
+
+    const { data } = await axios.put(`${serverUrl}/rejectrequest/${requestId}`,
+      { requestId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "rejectRequestSuccess", payload: data.message });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "rejectRequestFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const getReceivedConfirmations = (reportId) => async (dispatch) => {
+  try {
+    dispatch({ type: "getReceivedConfirmationsRequest" });
+
+    const { data } = await axios.get(`${serverUrl}/getreceivedconfirmations`,
+      { reportId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "getReceivedConfirmationsSuccess", payload: data });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "getReceivedConfirmationsFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const retractConfirmationRequest = (confirmationId) => async (dispatch) => {
+  try {
+    dispatch({ type: "retractConfirmationRequest" });
+
+    const { data } = await axios.put(`${serverUrl}/retractconfirmation/${confirmationId}`,
+      { confirmationId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "retractConfirmationSuccess", payload: data.message });
+  } catch (error) {
+    dispatch({
+      type: "retractConfirmationFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const confirmRequest = (confirmationId) => async (dispatch) => {
+  try {
+    dispatch({ type: "confirmRequestRequest" });
+
+    const { data } = await axios.put(`${serverUrl}/confirmrequest/${confirmationId}`,
+      { confirmationId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "confirmRequestSuccess", payload: data.message });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "confirmRequestFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const denyRequest = (confirmationId) => async (dispatch) => {
+  try {
+    dispatch({ type: "denyRequestRequest" });
+
+    const { data } = await axios.put(`${serverUrl}/denyrequest/${confirmationId}`,
+      { confirmationId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "denyRequestSuccess", payload: data.message });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "denyRequestFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
