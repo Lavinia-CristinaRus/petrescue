@@ -1,7 +1,6 @@
 import express from "express";
 import {
   addPet,
-  obsoletePet,
   updatePet,
   getAllPets
 } from "../controllers/Pet.js";

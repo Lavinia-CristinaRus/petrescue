@@ -40,8 +40,6 @@ const petSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-
-  otp_expiry: Date,
 });
 
 export const Pet = mongoose.model("Pet", petSchema);

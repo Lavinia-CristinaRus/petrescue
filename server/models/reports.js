@@ -46,11 +46,6 @@ const reportSchema = new mongoose.Schema({
   seen: [{
     type: String,
   }],
-
-  otp_expiry: {
-    type: Date,
-    default: Date.now,
-  },
 });
 
 export const Report = mongoose.model("Report", reportSchema);

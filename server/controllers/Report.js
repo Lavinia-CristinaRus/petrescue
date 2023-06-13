@@ -42,7 +42,6 @@ export const addReport = async (req, res) => {
         longitude: longitude
       },
       owner: owner,
-      otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 10000),
     });
 
     res.status(200).json({ success: true, message: "The stray animal was reported successfully" });
