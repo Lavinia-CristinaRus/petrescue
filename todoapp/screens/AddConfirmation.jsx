@@ -43,7 +43,7 @@ const AddConfirmation = ({ navigation, route }) => {
         })
 
         await dispatch(addConfirmation(myForm))
-        dispatch(getSentConfirmationRequests())
+        dispatch(getSentConfirmationRequests(""))
     }
 
     return (

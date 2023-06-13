@@ -26,15 +26,16 @@ const ReceivedAdoptionRequests = ({ navigation, route}) => {
   }, [alert, error, message, dispatch])
 
     useEffect(() => {
-      dispatch(getReceivedRequests());
-    }, []);
+      dispatch(getReceivedRequests(keyword));
+    }, [keyword]);
 
     return (
       <View>
       <View>
       <SearchBar
         placeholder="Search through pets requested for adoption..."
-        value={""}
+        value={keyword}
+        onChangeText = {setKeyword}
         containerStyle={{backgroundColor: "#759"}}
         inputContainerStyle={{borderRadius: 50, backgroundColor: '#648'}}
       />

@@ -84,7 +84,8 @@ export const rejectRequest = async (req, res) => {
 
 export const getRequestsByUser = async (req, res) => {
   try {
-    const request = await Request.find({owner: req.user._id})
+    const keyword = req.query.keyword;
+    const unfilteredRequest = await Request.find({owner: req.user._id})
       .populate({
         path: 'pet',
         select: 'name avatar description characteristics area owner',
@@ -94,6 +95,7 @@ export const getRequestsByUser = async (req, res) => {
         }
       })
       .populate('owner',['name', 'avatar']);
+    const request = unfilteredRequest.filter(req => req.pet.name.includes(keyword));
     return res.status(200).send(request);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -102,7 +104,8 @@ export const getRequestsByUser = async (req, res) => {
 
 export const getReceivedRequests = async (req, res) => {
   try {
-    const pets = await Pet.find({owner: req.user._id}).populate('owner',['name', 'avatar']);
+    const keyword = req.query.keyword;
+    const pets = await Pet.find({owner: req.user._id, name:{$regex: keyword, $options: 'i'}}).populate('owner',['name', 'avatar']);
     let requests = [];
     for(let i=0;i<pets.length;i++){
       const request = await Request.find({pet: pets[i]._id }).populate('owner',['name', 'avatar']);

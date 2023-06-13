@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
-import { addReport, getAllReports } from '../redux/action';
+import { addReport, getAllReports, loadUser } from '../redux/action';
 import MapView, { Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -23,6 +23,7 @@ const AddReport = ({ navigation, route }) => {
     const [ageCategory, setAgeCategory] = useState("");
     const [aggressionLevel, setAggressionLevel] = useState("");
     const [health, setHealth] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const animals = [
         { label: 'Dog', value: "dog" },
@@ -56,15 +57,18 @@ const AddReport = ({ navigation, route }) => {
     ];
 
   useEffect(() => {
-    (async () => {
-      // Request location permissions
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.log('Please grant location permissions');
-        return;
-      }
+    const getPermissions = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          return;
+        }
+      };
+      getPermissions();
+      getCurrentLocation();
+  }, []);
 
-      // Get current location
+  const getCurrentLocation = async () => {
+    try{
       let { coords } = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = coords;
       const initialRegion = {
@@ -75,9 +79,14 @@ const AddReport = ({ navigation, route }) => {
       };
       setLocation(initialRegion);
       setMarkerPosition(initialRegion);
-    })();
-  }, []);
 
+    }
+    catch (error) {
+    console.log('Error retrieving location:', error);
+    } finally {
+        setLoading(false);
+    }
+  }
   const handleMarkerDragEnd = (e) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     setMarkerPosition({ latitude, longitude });
@@ -125,8 +134,17 @@ const AddReport = ({ navigation, route }) => {
             name: reportImage.split("/").pop()
         })
 
-        await dispatch(addReport(myForm))
-        dispatch(getAllReports())
+        await dispatch(addReport(myForm));
+        await dispatch(getAllReports("", "", "", "", "", ""));
+        await dispatch(loadUser());
+    }
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#759" />
+            </View>
+        );
     }
 
     return (
@@ -379,6 +397,11 @@ const styles = StyleSheet.create({
     },
     dropdownPlaceholder:{
         color: "#b5b5b5",
-    }
+    },
+    loadingContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 })
 

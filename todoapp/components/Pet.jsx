@@ -6,7 +6,7 @@ import { useDispatch, useSelector} from 'react-redux';
 import { Button } from 'react-native-paper';
 import AdoptionRequest from './AdoptionRequest';
 
-const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave, adoptHandler, requests}) => {
+const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave, adoptHandler, requests, keyword}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const [savedByUser, setSaved] = useState(saved);
@@ -64,7 +64,7 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
         }}>
           <Text style={{fontSize: 14}}>{location}</Text>
       </View>
-      {requests?<></>:<View
+      {ownerId!==user.user.id?<></>:<View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -102,11 +102,12 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
                 ownerName = {data.owner.name}
                 valid = {data.valid}
                 accepted = {data.accepted}
+                keyword = {keyword}
               />
             </View>
           )
         }))
-      :(ownerId != user.user._id?
+      :(ownerId !== user.user._id?
         <Button
             style={styles.btn}
             onPress={adoptHandler}>

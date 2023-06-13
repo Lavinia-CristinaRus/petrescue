@@ -1,21 +1,19 @@
 import React from 'react';
-import MapView, { Marker, Callout } from 'react-native-maps';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import { StyleSheet, View, Text, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {getAllReports} from '../redux/action';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { ToggleButton } from 'react-native-paper';
-//to see how to personalize this map
 
 const Map = ({navigation}) => {
   Location.setGoogleApiKey("AIzaSyAUqWMPfAQS19hQYWNffvRAqm0aHqja9IY");
   const [location, setLocation] = useState(null);
   const dispatch = useDispatch();
   const reports = useSelector(state => state.report.report);
-  const [isVisible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [avatar, setAvatar] = useState("");
@@ -33,7 +31,7 @@ const Map = ({navigation}) => {
     };
     getPermissions();
     getCurrentLocation();
-    dispatch(getAllReports());
+    dispatch(getAllReports("", "", "", "", "", ""));
   }, []);
 
   const getCurrentLocation = async () => {
@@ -51,8 +49,18 @@ const Map = ({navigation}) => {
       }
     } catch (error) {
       console.log('Error retrieving location:', error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#759" />
+      </View>
+    );
+  }
 
   return (
 
@@ -116,5 +124,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom:10,
     alignSelf:'center'
-  }
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

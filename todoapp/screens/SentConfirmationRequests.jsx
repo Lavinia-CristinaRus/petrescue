@@ -39,15 +39,16 @@ const SentConfirmaionRequests = ({ navigation, route}) => {
     }, [alert, error, message, dispatch])
 
     useEffect(() => {
-      dispatch(getSentConfirmationRequests());
-    }, []);
+      dispatch(getSentConfirmationRequests(keyword));
+    }, [keyword]);
 
     return (
       <View>
       <View>
       <SearchBar
         placeholder="Search through stray pets reports..."
-        value={""}
+        value={keyword}
+        onChangeText = {setKeyword}
         containerStyle={{backgroundColor: "#759"}}
         inputContainerStyle={{borderRadius: 50, backgroundColor: '#648'}}
       />
@@ -94,6 +95,7 @@ const SentConfirmaionRequests = ({ navigation, route}) => {
                   ownerName = {data.report.owner.name}
                   seen ={data.report.seen}
                   confirmations = {confirms}
+                  keyword = {keyword}
                 />
               </View>
             )

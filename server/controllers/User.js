@@ -249,8 +249,10 @@ export const savePet = async (req,res) => {
   try {
     const user = await User.findById(req.user._id);
     const pet = req.body.petId;
-    user.savedPets.push(pet);
-    await user.save();
+    if(!user.savedPets.includes(pet)){
+      user.savedPets.push(pet);
+      await user.save();
+    }
 
     res.status(200).json({ success: true, message: "Pet saved successfully" });
   } catch (error) {

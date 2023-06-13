@@ -7,21 +7,21 @@ import {retractConfirmationRequest, confirmRequest, denyRequest,
     getSentConfirmationRequests, getReceivedConfirmations, getAllReports} from '../redux/action';
 import { Button } from 'react-native-paper';
 
-const ConfirmationRequest = ({_id, avatar, description, ownerId, ownerAvatar, ownerName, valid, accepted}) => {
+const ConfirmationRequest = ({_id, avatar, description, ownerId, ownerAvatar, ownerName, valid, accepted, keyword}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const retractRequestHandler = async () => {
     await dispatch(retractConfirmationRequest(_id));
-    dispatch(getSentConfirmationRequests());
+    dispatch(getSentConfirmationRequests(keyword));
   }
   const confirmRequestHandler = async () => {
     await dispatch(confirmRequest(_id));
-    dispatch(getReceivedConfirmations());
-    dispatch(getAllReports());
+    dispatch(getReceivedConfirmations(keyword));
+    dispatch(getAllReports("", "", "", "", "", ""));
   }
   const denyRequestHandler = async () => {
     await dispatch(denyRequest(_id));
-    dispatch(getReceivedConfirmations());
+    dispatch(getReceivedConfirmations(keyword));
   }
 
   return (

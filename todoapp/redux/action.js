@@ -187,13 +187,26 @@ export const addReport = (reportData) => async (dispatch) => {
   }
 };
 
-export const getAllReports = () => async (dispatch) => {
+export const getAllReports = (keyword, animal, ageCategory, aggressionLevel, size, health) => async (dispatch) => {
   try {
     dispatch({ type: "allReportsRequest" });
-
-    const { data } = await axios.get(`${serverUrl}/getallreports`);
+    const { data } = await axios.get(`${serverUrl}/getallreports`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      params: {
+        keyword:keyword,
+        animal:animal,
+        ageCategory: ageCategory,
+        aggressionLevel:aggressionLevel,
+        size:size,
+        health:health
+      }
+    });
     dispatch({ type: "allReportsSuccess", payload: data });
   } catch (error) {
+    console.log(error);
     dispatch({ type: "allReportsFailure", payload: error.response.data.message });
   }
 };
@@ -254,11 +267,24 @@ export const addPet = (petData) => async (dispatch) => {
   }
 };
 
-export const getAllPets = () => async (dispatch) => {
+export const getAllPets = (keyword, animal, ageCategory, aggressionLevel, size, health) => async (dispatch) => {
   try {
     dispatch({ type: "allPetsRequest" });
 
-    const { data } = await axios.get(`${serverUrl}/getallpets`);
+    const { data } = await axios.get(`${serverUrl}/getallpets`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      params: {
+        keyword:keyword,
+        animal:animal,
+        ageCategory: ageCategory,
+        aggressionLevel:aggressionLevel,
+        size:size,
+        health:health
+      }
+    });
     dispatch({ type: "allPetsSuccess", payload: data });
   } catch (error) {
     dispatch({ type: "allPetsFailure", payload: error.response.data.message });
@@ -337,20 +363,38 @@ export const addRequest = (requestData) => async (dispatch) => {
   }
 };
 
-export const getSentConfirmationRequests = () => async (dispatch) => {
+export const getSentConfirmationRequests = (keyword) => async (dispatch) => {
   try {
     dispatch({type: "getSentConfirmationsRequest"});
-    const { data } = await axios.get(`${serverUrl}/getsentconfirmations`);
+    const { data } = await axios.get(`${serverUrl}/getsentconfirmations`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params: {
+          keyword:keyword
+        }
+      }
+    );
     dispatch({ type: "getSentConfirmationsSuccess", payload: data });
   } catch (error) {
     dispatch({ type: "getSentConfirmationsFailure", payload: error.response.data.message });
   }
 };
 
-export const getSentAdoptionRequests = () => async (dispatch) => {
+export const getSentAdoptionRequests = (keyword) => async (dispatch) => {
   try {
     dispatch({type: "getSentRequestsRequest"});
-    const { data } = await axios.get(`${serverUrl}/getsentrequests`);
+    const { data } = await axios.get(`${serverUrl}/getsentrequests`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        params: {
+          keyword:keyword
+        }
+      }
+    );
     dispatch({ type: "getSentRequestsSuccess", payload: data });
   } catch (error) {
     dispatch({ type: "getSentRequestsFailure", payload: error.response.data.message });
@@ -378,16 +422,18 @@ export const retractAdoptionRequest = (requestId) => async (dispatch) => {
   }
 };
 
-export const getReceivedRequests = (petId) => async (dispatch) => {
+export const getReceivedRequests = (keyword) => async (dispatch) => {
   try {
     dispatch({ type: "getReceivedRequestsRequest" });
 
     const { data } = await axios.get(`${serverUrl}/getreceivedrequests`,
-      { petId },
       {
         headers: {
           "Content-Type": "application/json",
         },
+        params: {
+          keyword:keyword
+        }
       }
     );
     dispatch({ type: "getReceivedRequestsSuccess", payload: data });
@@ -444,16 +490,18 @@ export const rejectAdoptionRequest = (requestId) => async (dispatch) => {
   }
 };
 
-export const getReceivedConfirmations = (reportId) => async (dispatch) => {
+export const getReceivedConfirmations = (keyword) => async (dispatch) => {
   try {
     dispatch({ type: "getReceivedConfirmationsRequest" });
 
-    const { data } = await axios.get(`${serverUrl}/getreceivedconfirmations`,
-      { reportId },
+    const { data } = await axios.get(`${serverUrl}/getreceivedconfirmations/`,
       {
         headers: {
           "Content-Type": "application/json",
         },
+        params: {
+          keyword:keyword
+        }
       }
     );
     dispatch({ type: "getReceivedConfirmationsSuccess", payload: data });

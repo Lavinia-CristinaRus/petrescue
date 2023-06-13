@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
-import { addPet, getAllPets } from '../redux/action';
+import { addPet, getAllPets, loadUser } from '../redux/action';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Dropdown } from 'react-native-element-dropdown';
 import mime from 'mime';
@@ -45,7 +45,6 @@ const AddPet = ({ navigation, route }) => {
         { label: 'Low', value: "low" },
         { label: 'Medium', value: "medium" },
         { label: 'High', value: "high" },
-        { label: 'Unknown', value: "unknown" },
     ];
 
     const healthStates = [
@@ -88,7 +87,8 @@ const AddPet = ({ navigation, route }) => {
         })
 
         await dispatch(addPet(myForm))
-        dispatch(getAllPets())
+        await dispatch(getAllPets("", "", "", "", "", ""))
+        await dispatch(loadUser());
     }
 
     useEffect(() => {

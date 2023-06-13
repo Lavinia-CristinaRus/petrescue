@@ -6,11 +6,12 @@ import { useDispatch, useSelector} from 'react-redux';
 import { Button } from 'react-native-paper';
 import ConfirmationRequest from './ConfirmationRequest';
 
-const Report = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, seen, handleSeen, handleUnseen, pickUpHandler, confirmations}) => {
+const Report = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, seen, handleSeen, handleUnseen, pickUpHandler, confirmations, keyword}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const isPetSeen = (id) => {return seen?.includes(id)};
   const [seenByUser, setSeen] = useState(isPetSeen(user.user._id));
+  const [nrOfSeens, setNrOfSeens] = useState(seen.length);
 
   return (
     <View style={styles.customView}
@@ -77,7 +78,7 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
           paddingBottom: 15,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity onPress={() => {seenByUser ? handleUnseen(_id): handleSeen(_id); setSeen(!seenByUser)}}>
+          {(ownerId!=user.user._id)&&<TouchableOpacity onPress={() => {if(seenByUser){ handleUnseen(_id); setNrOfSeens(nrOfSeens-1)} else {handleSeen(_id); setNrOfSeens(nrOfSeens+1)} setSeen(!seenByUser)}}>
             <AntDesign
               name={seenByUser ? 'eye' : 'eyeo'}
               style={{
@@ -86,9 +87,9 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
                 color:'black',
               }}
             />
-          </TouchableOpacity>
+          </TouchableOpacity>}
           <Text>
-            Seen by {seenByUser ? "you"+ ((seen.length-1>0)? " and "+ (seen.length-1)+" others" :""):seen.length} 
+            Seen by {(seenByUser || ownerId==user.user._id ) ? "you"+ ((nrOfSeens>0)? " and "+ nrOfSeens + " others" :""):nrOfSeens+1} 
           </Text>
         </View>
       </View>}
@@ -107,6 +108,7 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
                 ownerName = {data.owner.name}
                 valid = {data.valid}
                 accepted = {data.accepted}
+                keyword = {keyword}
               />
             </View>
           )

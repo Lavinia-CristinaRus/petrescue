@@ -7,21 +7,21 @@ import {retractAdoptionRequest, acceptAdoptionRequest, rejectAdoptionRequest,
   getSentAdoptionRequests, getReceivedRequests, getAllPets} from '../redux/action';
 import { Button } from 'react-native-paper';
 
-const AdoptionRequest = ({_id, description, ownerId, ownerAvatar, ownerName, valid, accepted}) => {
+const AdoptionRequest = ({_id, description, ownerId, ownerAvatar, ownerName, valid, accepted,keyword}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const retractRequestHandler = async () => {
     await dispatch(retractAdoptionRequest(_id));
-    dispatch(getSentAdoptionRequests());
+    dispatch(getSentAdoptionRequests(keyword));
   }
   const acceptRequestHandler = async () => {
     await dispatch(acceptAdoptionRequest(_id));
-    dispatch(getReceivedRequests());
-    dispatch(getAllPets());
+    dispatch(getReceivedRequests(keyword));
+    dispatch(getAllPets("", "", "", "", "", ""));
   }
   const rejectRequestHandler = async () => {
     await dispatch(rejectAdoptionRequest(_id));
-    dispatch(getReceivedRequests());
+    dispatch(getReceivedRequests(keyword));
   }
 
   return (

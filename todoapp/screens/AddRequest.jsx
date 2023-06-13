@@ -20,7 +20,7 @@ const AddRequest = ({ navigation, route }) => {
         myForm.append("message", requestMessage);
         myForm.append("petId", petId);
         await dispatch(addRequest(myForm))
-        dispatch(getSentAdoptionRequests())
+        dispatch(getSentAdoptionRequests(""))
     }
 
     useEffect(() => {

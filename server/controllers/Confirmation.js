@@ -94,8 +94,8 @@ export const denyRequest = async (req, res) => {
 export const getConfirmationsByUser = async (req, res) => {
   try {
     // const confirmation = await Confirmation.find({owner: req.user._id}).populate('report',['name', 'avatar', 'description','characteristics', 'area']);
-    
-    const confirmation = await Confirmation.find({owner: req.user._id})
+    const keyword = req.query.keyword;
+    const unfiteredConfirmation = await Confirmation.find({owner: req.user._id})
       .populate({
         path: 'report',
         select: 'name avatar description characteristics area owner seen',
@@ -105,7 +105,7 @@ export const getConfirmationsByUser = async (req, res) => {
         }
       })
       .populate('owner',['name', 'avatar']);
-      console.log(confirmation);
+    const confirmation = unfiteredConfirmation.filter(conf => conf.report.name.includes(keyword));
     return res.status(200).send(confirmation);
   } catch (error) {
     console.log(error);
@@ -115,7 +115,8 @@ export const getConfirmationsByUser = async (req, res) => {
 
 export const getReceivedConfirmations = async (req, res) => {
   try {
-    const reports = await Report.find({owner: req.user._id}).populate('owner',['name', 'avatar']);
+    const keyword = req.query.keyword;
+    const reports = await Report.find({owner: req.user._id, name:{$regex: keyword, $options: 'i'}}).populate('owner',['name', 'avatar']);
     let confirmations = [];
     for(let i=0;i<reports.length;i++){
       const confirmation = await Confirmation.find({report: reports[i]._id }).populate('owner',['name', 'avatar']);

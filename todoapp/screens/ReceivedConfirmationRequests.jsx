@@ -37,15 +37,16 @@ const ReceivedConfirmaionRequests = ({ navigation, route}) => {
     }, [alert, error, message, dispatch])
 
     useEffect(() => {
-      dispatch(getReceivedConfirmations());
-    }, []);
+      dispatch(getReceivedConfirmations(keyword));
+    }, [keyword]);
 
     return (
       <View>
       <View>
       <SearchBar
         placeholder="Search through stray pets you reported..."
-        value={""}
+        value={keyword}
+        onChangeText = {setKeyword}
         containerStyle={{backgroundColor: "#759"}}
         inputContainerStyle={{borderRadius: 50, backgroundColor: '#648'}}
       />

@@ -87,7 +87,24 @@ export const updatePet = async (req, res) => {
 
 export const getAllPets = async (req, res) => {
   try {
-    const pets = await Pet.find({solved: false, valid: true}).populate('owner',['name', 'avatar']);
+    const keyword = req.query.keyword;
+    const animal = req.query.animal;
+    const ageCategory= req.query.ageCategory;
+    const aggressionLevel = req.query.aggressionLevel;
+    const size = req.query.size;
+    const health = req.query.health;
+    const pets = await Pet.find(
+      {solved: false, valid: true, name:{$regex: keyword, $options: 'i'},
+        $expr: {
+          $and: [
+            { $regexMatch: {input: { $arrayElemAt: ['$characteristics', 0] }, regex: animal, options: 'i'} },
+            { $regexMatch: {input: { $arrayElemAt: ['$characteristics', 1] }, regex: size, options: 'i'} },
+            { $regexMatch: {input: { $arrayElemAt: ['$characteristics', 2] }, regex: ageCategory, options: 'i'} },
+            { $regexMatch: {input: { $arrayElemAt: ['$characteristics', 3] }, regex: aggressionLevel, options: 'i'} },
+            { $regexMatch: {input: { $arrayElemAt: ['$characteristics', 4] }, regex: health, options: 'i'} },
+          ],
+        }
+      }).populate('owner',['name', 'avatar']);
     if(pets) {
       return res.status(200).send(pets);
     }
