@@ -43,11 +43,6 @@ const reportSchema = new mongoose.Schema({
     default: false,
   },
 
-  valid: {
-    type: Boolean,
-    default: true,
-  },
-
   seen: [{
     type: String,
   }],

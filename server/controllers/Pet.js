@@ -46,20 +46,6 @@ export const addPet = async (req, res) => {
   }
 };
 
-export const obsoletePet = async (req, res) => {
-  try {
-
-    const pet = await Pet.findById(req.pet._id);
-
-    pet.valid = false;
-
-    await pet.save();
-
-    sendToken(res, report, 200, "Adoption announcment obsoleted successfully");
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
 
 export const updatePet = async (req, res) => {
   try {
@@ -94,7 +80,7 @@ export const getAllPets = async (req, res) => {
     const size = req.query.size;
     const health = req.query.health;
     const pets = await Pet.find(
-      {solved: false, valid: true, name:{$regex: keyword, $options: 'i'},
+      {solved: false, name:{$regex: keyword, $options: 'i'},
         $expr: {
           $and: [
             { $regexMatch: {input: { $arrayElemAt: ['$characteristics', 0] }, regex: animal, options: 'i'} },

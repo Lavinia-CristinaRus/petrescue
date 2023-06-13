@@ -51,16 +51,12 @@ export const addReport = async (req, res) => {
   }
 };
 
-export const obsoleteReport = async (req, res) => {
+export const deleteReport = async (req, res) => {
   try {
 
     const report = await Report.findById(req.report._id);
 
-    report.valid = false;
-
-    await report.save();
-
-    // sendToken(res, report, 200, "Report obsoleted successfully");
+    
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -128,7 +124,7 @@ export const getAllReports = async (req, res) => {
     const size = req.query.size;
     const health = req.query.health;
     const reports = await Report.find(
-      {solved: false, valid: true, name:{$regex: keyword, $options: 'i'}, 
+      {solved: false, name:{$regex: keyword, $options: 'i'}, 
         $expr: {
           $and: [
             { $regexMatch: {input: { $arrayElemAt: ['$characteristics', 0] }, regex: animal, options: 'i'} },

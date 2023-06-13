@@ -1,7 +1,7 @@
 import express from "express";
 import {
   addReport,
-  obsoleteReport,
+  deleteReport,
   updateReport,
   seenBy,
   unseenBy,

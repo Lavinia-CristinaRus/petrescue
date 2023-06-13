@@ -41,11 +41,6 @@ const petSchema = new mongoose.Schema({
     default: false,
   },
 
-  valid: {
-    type: Boolean,
-    default: true,
-  },
-
   otp_expiry: Date,
 });
 
