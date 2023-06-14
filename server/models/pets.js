@@ -40,6 +40,17 @@ const petSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isPhotoRequested: {
+    type: Boolean,
+    default: false
+  },
+
+  requestedPhotos:[
+    {
+      public_id: String,
+      url: String,
+    }
+  ]
 });
 
 export const Pet = mongoose.model("Pet", petSchema);

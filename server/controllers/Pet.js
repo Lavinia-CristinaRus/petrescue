@@ -110,3 +110,13 @@ export const deletePet = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getFavourites = async (req, res) => {
+  try {
+    const ids = req.user.savedPets;
+    const favourites = await Pet.find({_id: { $in: ids }, solved:false}).populate('owner',['name', 'avatar']);
+    return res.status(200).send(favourites);  
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};

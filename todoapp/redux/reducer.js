@@ -325,6 +325,19 @@ export const petReducer = createReducer(
       state.loading = false;
       state.error = action.payload;
     },
+    getFavouritesRequest: (state) => {
+      state.loading = true;
+    },
+    getFavouritesSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.favourites = action.payload;
+      // state.message = action.payload.message;
+    },
+    getFavouritesFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 );
 

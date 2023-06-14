@@ -67,7 +67,7 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
         }}>
           <Text style={{fontSize: 14}}>{location}</Text>
       </View>
-      {ownerId!==user.user.id?<></>:<View
+      {ownerId==user.user._id?<></>:requests?<></>:<View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',

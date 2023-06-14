@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch} from 'react-redux'
 import { Button } from 'react-native-paper'
-import { addRequest, getSentAdoptionRequests } from '../redux/action'
+import { addRequest, getSentAdoptionRequests, loadUser } from '../redux/action'
 
 const AddRequest = ({ navigation, route }) => {
     
@@ -20,7 +20,8 @@ const AddRequest = ({ navigation, route }) => {
         myForm.append("message", requestMessage);
         myForm.append("petId", petId);
         await dispatch(addRequest(myForm))
-        dispatch(getSentAdoptionRequests(""))
+        await dispatch(getSentAdoptionRequests(""))
+        dispatch(loadUser())
     }
 
     useEffect(() => {

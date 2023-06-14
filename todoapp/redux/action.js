@@ -658,3 +658,17 @@ export const modifyPet = (formData) => async (dispatch) => {
     });
   }
 };
+
+export const getFavourites = () => async (dispatch) => {
+  try {
+    dispatch({ type: "getFavouritesRequest" });
+    const { data } = await axios.get(`${serverUrl}/getfavourites`);
+    dispatch({ type: "getFavouritesSuccess", payload: data});
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "getFavouritesFailure",
+      payload: error.response.data.message,
+    });
+  }
+};

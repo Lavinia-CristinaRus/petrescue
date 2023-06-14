@@ -85,6 +85,35 @@ const Profile = ({ navigation, route }) => {
                     <Text style={{ color: "#fff" }}>Update</Text>
                 </Button>
 
+                <View style={{height: 20}}></View>
+
+                {
+                    (!user.verified) ? null : <Button
+                        onPress={() => navigation.navigate("favourites")}
+                        color='rgb(50,50,50)'
+                    >
+                        Favourites
+                    </Button>
+                }
+                
+                {
+                    (!user.verified) ? null : <Button
+                        onPress={() => navigation.navigate("myformerpets")}
+                        color='rgb(50,50,50)'
+                    >
+                        My former pets
+                    </Button>
+                }
+                
+                {
+                    (!user.verified) ? null : <Button
+                        onPress={() => navigation.navigate("photorequests")}
+                        color='rgb(50,50,50)'
+                    >
+                        Photo requests
+                    </Button>
+                }
+
                 <Button
                     color='rgb(50,50,50)'
                     onPress={() => navigation.navigate("changepassword")}

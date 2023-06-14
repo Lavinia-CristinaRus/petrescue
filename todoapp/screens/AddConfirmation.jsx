@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch} from 'react-redux'
 import { Button } from 'react-native-paper'
-import { addConfirmation, getSentConfirmationRequests } from '../redux/action'
+import { addConfirmation, getSentConfirmationRequests, loadUser } from '../redux/action'
 import mime from 'mime'
 
 const AddConfirmation = ({ navigation, route }) => {
@@ -44,6 +44,7 @@ const AddConfirmation = ({ navigation, route }) => {
 
         await dispatch(addConfirmation(myForm))
         dispatch(getSentConfirmationRequests(""))
+        dispatch(loadUser())
     }
 
     return (
