@@ -5,11 +5,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector} from 'react-redux';
 import { Button } from 'react-native-paper';
 import AdoptionRequest from './AdoptionRequest';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave, adoptHandler, requests, keyword}) => {
+const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave, adoptHandler, requests, keyword, solved, handleModify, handleDelete}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const [savedByUser, setSaved] = useState(saved);
+  const [menu, setMenu] = useState(false);
+  const [deleteMenu, setDeleteMenu] = useState(false);
 
   return (
     <View style={styles.customView}
@@ -33,7 +36,7 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
             </Text>
           </View>
         </View>
-        {(ownerId == user.user._id)&&<Feather name="more-vertical" style={{fontSize: 20}} />}
+        {(ownerId == user.user._id && !solved)&&<TouchableOpacity onPress={()=>{setMenu(true)}}><Feather name="more-vertical" style={{fontSize: 20}} /></TouchableOpacity>}
       </View>
       <View style={{flexDirection: 'row'}}>
         <View>
@@ -73,7 +76,7 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
           paddingBottom: 15,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity onPress={() => {savedByUser ? handleUnsave(_id): handleSave(_id); setSaved(!savedByUser)}}>
+          <TouchableOpacity onPress={() => {savedByUser ? handleUnsave(): handleSave(); setSaved(!savedByUser)}}>
             <AntDesign
               name={savedByUser ? 'heart' : 'hearto'}
               style={{
@@ -114,6 +117,61 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
             <Text style={{ color: "#fff" }}>Adopt!</Text>
         </Button>:<></>)
       }
+      {(menu||deleteMenu) && <View>
+        <View style={{position: "absolute", width:'93%', height:185, backgroundColor: 'rgba(128, 128, 128, 0.5)', bottom:45, borderRadius: 50, left:12}}>
+          <TouchableOpacity style={{width:'100%', height:'100%'}}>
+          </TouchableOpacity>
+        </View>
+        
+        {menu&&<View style={styles.menuView}>
+            <TouchableOpacity style={{flexDirection: 'row', alignSelf: 'flex-end',right:15, top:5}}>
+            <Icon name="times-circle" size={25} color="#759" onPress={()=>{setMenu(false)}}/>
+            </TouchableOpacity>
+            <View style={{top:20}}>
+            <Button
+                color='purple'
+                style={{width:'100%'}}
+                onPress={handleModify}
+              >
+                Modify pet
+              </Button>
+              <View style ={{height:15}}></View>
+              <Button
+                color='purple'
+                style={{width:'100%'}}
+                onPress={()=>{setMenu(false);setDeleteMenu(true)}}
+              >
+                Delete pet
+              </Button>
+            </View>
+            <View style={{height: 40}}></View>
+          </View>}
+          {deleteMenu&&<View style={styles.menuView}>
+            <TouchableOpacity style={{flexDirection: 'row', alignSelf: 'flex-end',right:15, top:5}}>
+            <Icon name="times-circle" size={25} color="#759" onPress={()=>{setDeleteMenu(false)}}/>
+            </TouchableOpacity>
+            <View style={{paddingHorizontal:30, top:20}}>
+              <Text style={{fontSize: 15}}>Are you sure you want to delete this adoption announcement?</Text>
+              <View style={{height: 20}}></View>
+              <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+                <Button
+                    color='purple'
+                    onPress={()=>{handleDelete();setDeleteMenu(false)}}
+                  >
+                    Yes
+                  </Button>
+                  <View style={{width: 50}}></View>
+                  <Button
+                    color='purple'
+                    onPress={()=>{setDeleteMenu(false)}}
+                  >
+                    No
+                  </Button>
+                </View>
+            </View>
+            <View style={{height: 40}}></View>
+          </View>}
+          </View>}
       <View style={{height: 15}}></View>
     </View>
   );
@@ -135,6 +193,17 @@ const styles = StyleSheet.create({
     padding:0,
     alignSelf:'center',
     borderRadius: 50
+  },
+  menuView: {
+    backgroundColor: "#fff",
+    borderRadius: 50,
+    padding: 5,
+    width: '90%',
+    content: 'fill',
+    position: "absolute",
+    bottom:50,
+    height:175,
+    alignSelf:'center',
   },
 })
 

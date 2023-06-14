@@ -7,7 +7,7 @@ import { Button } from 'react-native-paper';
 import ConfirmationRequest from './ConfirmationRequest';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const Report = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, seen, handleSeen, handleUnseen, pickUpHandler, confirmations, keyword}) => {
+const Report = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, seen, solved, handleSeen, handleUnseen, pickUpHandler, confirmations, keyword, handleModify, handleDelete}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const isPetSeen = (id) => {return seen?.includes(id)};
@@ -15,14 +15,6 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
   const [nrOfSeens, setNrOfSeens] = useState(seen.length);
   const [menu, setMenu] = useState(false);
   const [deleteMenu, setDeleteMenu] = useState(false);
-
-  const handleDelete = async (id) => {
-    setMenu(false);
-    setDeleteMenu(false);
-  }
-
-  const handleModify = async (id) => {
-  }
 
   return (
     <View style={styles.customView}
@@ -46,7 +38,7 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
             </Text>
           </View>
         </View>
-        {(ownerId == user.user._id)&& <TouchableOpacity onPress={()=>{setMenu(true)}}>
+        {(ownerId == user.user._id && !solved)&& <TouchableOpacity onPress={()=>{setMenu(true)}}>
             <Feather name="more-vertical" style={{fontSize: 20}} />
           </TouchableOpacity>
         }
@@ -92,7 +84,7 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
           paddingBottom: 15,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {(ownerId!=user.user._id)&&<TouchableOpacity onPress={() => {if(seenByUser){ handleUnseen(_id); setNrOfSeens(nrOfSeens-1)} else {handleSeen(_id); setNrOfSeens(nrOfSeens+1)} setSeen(!seenByUser)}}>
+          {(ownerId!=user.user._id)&&<TouchableOpacity onPress={() => {if(seenByUser){ handleUnseen(); setNrOfSeens(nrOfSeens-1)} else {handleSeen(); setNrOfSeens(nrOfSeens+1)} setSeen(!seenByUser)}}>
             <AntDesign
               name={seenByUser ? 'eye' : 'eyeo'}
               style={{
@@ -170,7 +162,7 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
               <View style={{flexDirection: 'row', alignSelf: 'center'}}>
                 <Button
                     color='purple'
-                    onPress={handleDelete}
+                    onPress={()=>{handleDelete();setDeleteMenu(false)}}
                   >
                     Yes
                   </Button>

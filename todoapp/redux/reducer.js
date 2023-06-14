@@ -207,6 +207,32 @@ export const reportReducer = createReducer(
     clearMessage: (state) => {
       state.message = null;
     },
+    deleteReportRequest: (state) => {
+      state.loading = true;
+    },
+    deleteReportSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    deleteReportFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    modifyReportRequest: (state) => {
+      state.loading = true;
+    },
+    modifyReportSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    modifyReportFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 );
 
@@ -272,6 +298,32 @@ export const petReducer = createReducer(
 
     clearMessage: (state) => {
       state.message = null;
+    },
+    deleteReportRequest: (state) => {
+      state.loading = true;
+    },
+    deleteReportSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    deletePetFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    modifyPetRequest: (state) => {
+      state.loading = true;
+    },
+    modifyPetSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    modifyPetFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     },
   },
 );

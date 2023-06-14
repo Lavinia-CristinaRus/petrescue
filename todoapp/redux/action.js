@@ -579,3 +579,82 @@ export const denyRequest = (confirmationId) => async (dispatch) => {
   }
 };
 
+export const deleteReport = (reportId) => async (dispatch) => {
+  try {
+    dispatch({ type: "deleteReportRequest" });
+
+    const { data } = await axios.delete(`${serverUrl}/deletereport`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      params: {
+        reportId: reportId,
+      },
+    });
+    
+    dispatch({ type: "deleteReportSuccess", payload: data.message });
+  } catch (error) {
+    dispatch({
+      type: "deleteReportFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const modifyReport = (formData) => async (dispatch) => {
+  try {
+    dispatch({ type: "modifyReportRequest" });
+
+    const { data } = await axios.put(`${serverUrl}/modifyreport`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    dispatch({ type: "modifyReportSuccess", payload: data.message });
+  } catch (error) {
+    dispatch({
+      type: "modifyReportFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const deletePet = (petId) => async (dispatch) => {
+  try {
+    dispatch({ type: "deletePetRequest" });
+
+    const { data } = await axios.delete(`${serverUrl}/deletepet`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      params: {
+        petId: petId,
+      },
+    });
+    
+    dispatch({ type: "deletePetSuccess", payload: data.message });
+  } catch (error) {
+    dispatch({
+      type: "deletePetFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const modifyPet = (formData) => async (dispatch) => {
+  try {
+    dispatch({ type: "modifyPetRequest" });
+    const { data } = await axios.put(`${serverUrl}/modifypet`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    dispatch({ type: "modifyPetSuccess", payload: data.message });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "modifyPetFailure",
+      payload: error.response.data.message,
+    });
+  }
+};

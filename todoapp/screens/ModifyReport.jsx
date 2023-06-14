@@ -1,29 +1,35 @@
-import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity, ActivityIndicator} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity} from 'react-native';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
-import { addReport, getAllReports, loadUser } from '../redux/action';
+import { modifyReport, getAllReports, loadUser } from '../redux/action';
 import MapView, { Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Dropdown } from 'react-native-element-dropdown';
-import mime from 'mime';
 
-const AddReport = ({ navigation, route }) => {
+const ModifyReport = ({ navigation, route }) => {
     
     const {user} = useSelector(state => state.auth)
-    const [reportName, setReportName] = useState("");
-    const [reportDescription, setReportDescription] = useState("");
-    const [reportImage, setReportImage] = useState("");
+    const reportId = route.params.report._id;
+    const [reportName, setReportName] = useState(route.params.report.name);
+    const [reportDescription, setReportDescription] = useState(route.params.report.description);
+    const avatar = route.params.report.avatar.url;
     Location.setGoogleApiKey("AIzaSyAUqWMPfAQS19hQYWNffvRAqm0aHqja9IY");
-    const [location, setLocation] = useState(null);
-    const [markerPosition, setMarkerPosition] = useState(null);
-    const [animal, setAnimal] = useState("");
-    const [size, setSize] = useState("");
-    const [ageCategory, setAgeCategory] = useState("");
-    const [aggressionLevel, setAggressionLevel] = useState("");
-    const [health, setHealth] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [location, setLocation] = useState(
+        {
+            latitude:route.params.report.area.latitude,
+            longitude: route.params.report.area.longitude,
+            latitudeDelta: 0.001,
+            longitudeDelta: 0.002,
+        }
+    );
+    const [markerPosition, setMarkerPosition] = useState(route.params.report.area);
+    const [animal, setAnimal] = useState(route.params.report.characteristics[0]);
+    const [size, setSize] = useState(route.params.report.characteristics[1]);
+    const [ageCategory, setAgeCategory] = useState(route.params.report.characteristics[2]);
+    const [aggressionLevel, setAggressionLevel] = useState(route.params.report.characteristics[3]);
+    const [health, setHealth] = useState(route.params.report.characteristics[4]);
 
     const animals = [
         { label: 'Dog', value: "dog" },
@@ -56,37 +62,6 @@ const AddReport = ({ navigation, route }) => {
         { label: 'Healthy', value: "healthy" },
     ];
 
-  useEffect(() => {
-    const getPermissions = async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          return;
-        }
-      };
-      getPermissions();
-      getCurrentLocation();
-  }, []);
-
-  const getCurrentLocation = async () => {
-    try{
-      let { coords } = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = coords;
-      const initialRegion = {
-        latitude,
-        longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.002,
-      };
-      setLocation(initialRegion);
-      setMarkerPosition(initialRegion);
-
-    }
-    catch (error) {
-    console.log('Error retrieving location:', error);
-    } finally {
-        setLoading(false);
-    }
-  }
   const handleMarkerDragEnd = (e) => {
     const { latitude, longitude } = e.nativeEvent.coordinate;
     setMarkerPosition({ latitude, longitude });
@@ -95,29 +70,14 @@ const AddReport = ({ navigation, route }) => {
 
     const dispatch = useDispatch()
 
-    const handleImage = () => {
-        navigation.navigate("camera", {
-            addReport: true
-        })
-    };
-
-    useEffect(() => {
-
-        if (route.params) {
-            if (route.params.image) {
-                setReportImage(route.params.image)
-            }
-        }
-
-    }, [route])
-
-    const addReportHandler = async () => {
+    const modifyReportHandler = async () => {
         const locationObject = await Location.reverseGeocodeAsync({
             longitude: markerPosition.longitude,
             latitude: markerPosition.latitude
         });
         const locationStr = (locationObject[0].street?locationObject[0].street : (locationObject[0].name? locationObject[0].name : "")) + " " + locationObject[0].city+ " " + ", " + locationObject[0].country;
         const myForm = new FormData();
+        myForm.append("reportId", reportId);
         myForm.append("reportName", reportName);
         myForm.append("reportDescription", reportDescription);
         myForm.append("animal", animal);
@@ -128,23 +88,10 @@ const AddReport = ({ navigation, route }) => {
         myForm.append("location", locationStr);
         myForm.append("latitude", markerPosition.latitude);
         myForm.append("longitude", markerPosition.longitude);
-        myForm.append("reportImage", {
-            uri: reportImage,
-            type: mime.getType(reportImage),
-            name: reportImage.split("/").pop()
-        })
 
-        await dispatch(addReport(myForm));
+        await dispatch(modifyReport(myForm));
         await dispatch(getAllReports("", "", "", "", "", ""));
         await dispatch(loadUser());
-    }
-
-    if (loading) {
-        return (
-            <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#759" />
-            </View>
-        );
     }
 
     return (
@@ -160,14 +107,9 @@ const AddReport = ({ navigation, route }) => {
             </View>
             <View style={{height: 40}}></View>
         </View>
-        <TouchableOpacity style={{alignItems: 'center'}} onPress={handleImage}>
+        <TouchableOpacity style={{alignItems: 'center'}}>
             <View style={stylesChoosePhoto.container}>
-                <Image style={stylesChoosePhoto.image} source={{ uri: reportImage ? reportImage : null}}/>
-                {!reportImage &&
-                <>
-                <Image style={stylesChoosePhoto.icon} source={require('../assets/uploadImage.jpg')}/>
-                <Text style={values.h2Style}>Choose a Photo</Text>
-                </>}
+                <Image style={stylesChoosePhoto.image} source={{ uri: avatar }}/>
             </View>
         </TouchableOpacity>
         <View style={{height: 20}}></View>
@@ -286,8 +228,8 @@ const AddReport = ({ navigation, route }) => {
         <View style={{height: 20}}></View>
         <Button
             style={styles.btn}
-            onPress={addReportHandler}>
-            <Text style={{ color: "#fff" }}>Report</Text>
+            onPress={modifyReportHandler}>
+            <Text style={{ color: "#fff" }}>Modify report</Text>
         </Button>
         </View>
         </View>
@@ -296,7 +238,7 @@ const AddReport = ({ navigation, route }) => {
     );
 };
 
-export default AddReport;
+export default ModifyReport;
 
 const stylesChoosePhoto = StyleSheet.create({
     container: {
@@ -397,11 +339,6 @@ const styles = StyleSheet.create({
     },
     dropdownPlaceholder:{
         color: "#b5b5b5",
-    },
-    loadingContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
 })
 

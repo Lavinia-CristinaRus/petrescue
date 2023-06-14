@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
-import {getAllReports} from '../redux/action';
+import {getAllReports, deleteReport} from '../redux/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Report from './../components/Report.jsx'
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -118,16 +118,23 @@ const Reports = ({ navigation, route}) => {
         </View>
         {reports?.slice(0).reverse().map((data, index) => {
 
-            const handleSeen = async (id) => {
-              await dispatch(seenPet(id));
+            const handleSeen = async () => {
+              await dispatch(seenPet(data._id));
               dispatch(getAllReports(keyword, animal, ageCategory, aggressionLevel, size, health));
             }
-            const handleUnseen = async (id) => {
-              await dispatch(unseenPet(id));
+            const handleUnseen = async () => {
+              await dispatch(unseenPet(data._id));
               dispatch(getAllReports(keyword, animal, ageCategory, aggressionLevel, size, health));
             }
             const pickUpHandler = async () => {
               navigation.navigate("addconfirmation",{reportId:data._id});
+            }
+            const handleDelete = async () => {
+              await dispatch(deleteReport(data._id));
+              dispatch(getAllReports(keyword, animal, ageCategory, aggressionLevel, size, health));
+            }
+            const handleModify = async () => {
+              navigation.navigate("modifyreport",{report:data});
             }
 
             return(
@@ -144,9 +151,12 @@ const Reports = ({ navigation, route}) => {
                   ownerAvatar = {data.owner.avatar.url}
                   ownerName = {data.owner.name}
                   seen ={data.seen}
+                  solved = {data.solved}
                   handleSeen = {handleSeen}
                   handleUnseen = {handleUnseen}
                   pickUpHandler = {pickUpHandler}
+                  handleDelete = {handleDelete}
+                  handleModify = {handleModify}
                 />
               </View>
             )

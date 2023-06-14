@@ -24,6 +24,8 @@ import SentAdoptionRequests from './screens/SentAdoptionRequests'
 import ReceivedAdoptionRequests from './screens/ReceivedAdoptionRequests'
 import SentConfirmationRequests from './screens/SentConfirmationRequests'
 import ReceivedConfirmationRequests from './screens/ReceivedConfirmationRequests'
+import ModifyReport from './screens/ModifyReport'
+import ModifyPet from './screens/ModifyPet'
 
 const Stack = createNativeStackNavigator()
 
@@ -63,6 +65,8 @@ const Main = () => {
                 <Stack.Screen name='receivedadoptionrequests' component={ReceivedAdoptionRequests} options={{ headerShown: false }} />
                 <Stack.Screen name='sentconfirmationrequests' component={SentConfirmationRequests} options={{ headerShown: false }} />
                 <Stack.Screen name='receivedconfirmationrequests' component={ReceivedConfirmationRequests} options={{ headerShown: false }} />
+                <Stack.Screen name='modifyreport' component={ModifyReport} options={{ headerShown: false }} />
+                <Stack.Screen name='modifypet' component={ModifyPet} options={{ headerShown: false }} />
             </Stack.Navigator>
 
             {isAuthenticated && <Footer />}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {Button} from 'react-native-paper';
-import {getAllPets} from '../redux/action';
+import {getAllPets, deletePet} from '../redux/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pet from './../components/Pet.jsx'
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -115,16 +115,23 @@ const Pets = ({ navigation, route}) => {
           </TouchableOpacity>
         </View>
         {pets?.slice(0).reverse().map((data, index) => {
-            const handleSave = async (id) => {
-              await dispatch(savePet(id));
+            const handleSave = async () => {
+              await dispatch(savePet(data._id));
               dispatch(getAllPets(keyword, animal, ageCategory, aggressionLevel, size, health));
             }
-            const handleUnsave = async (id) => {
-              await dispatch(unsavePet(id));
+            const handleUnsave = async () => {
+              await dispatch(unsavePet(data._id));
               dispatch(getAllPets(keyword, animal, ageCategory, aggressionLevel, size, health));
             }
             const adoptHandler = async () => {
               navigation.navigate("addrequest",{pet:data._id});
+            }
+            const handleDelete = async () => {
+              await dispatch(deletePet(data._id));
+              dispatch(getAllPets(keyword, animal, ageCategory, aggressionLevel, size, health));
+            }
+            const handleModify = async () => {
+              navigation.navigate("modifypet",{pet:data});
             }
 
             return(
@@ -144,6 +151,9 @@ const Pets = ({ navigation, route}) => {
                   handleSave = {handleSave}
                   handleUnsave = {handleUnsave}
                   adoptHandler = {adoptHandler}
+                  solved = {data.solved}
+                  handleDelete = {handleDelete}
+                  handleModify = {handleModify}
                 />
               </View>
             )
@@ -254,7 +264,7 @@ const Pets = ({ navigation, route}) => {
           position: 'absolute',
           bottom: -25, zIndex: 1
         }}>
-        <Icon name="plus-circle" size={45} color="#759" onPress={() => navigation.navigate("addpet")}/>
+        <Icon name="plus-circle" size={45} color="#759" onPress={() => {if(!filters){navigation.navigate("addpet")}}}/>
       </View>
       </View>
       

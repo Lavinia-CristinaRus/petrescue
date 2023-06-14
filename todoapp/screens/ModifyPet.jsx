@@ -1,29 +1,25 @@
-import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity, ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity, ProgressViewIOSComponent} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
-import { addReport, getAllReports, loadUser } from '../redux/action';
-import MapView, { Marker } from 'react-native-maps';
-import { PROVIDER_GOOGLE } from 'react-native-maps';
-import * as Location from 'expo-location';
+import { modifyPet, getAllPets, loadUser } from '../redux/action';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Dropdown } from 'react-native-element-dropdown';
-import mime from 'mime';
 
-const AddReport = ({ navigation, route }) => {
+const AddPet = ({ navigation, route }) => {
     
     const {user} = useSelector(state => state.auth)
-    const [reportName, setReportName] = useState("");
-    const [reportDescription, setReportDescription] = useState("");
-    const [reportImage, setReportImage] = useState("");
-    Location.setGoogleApiKey("AIzaSyAUqWMPfAQS19hQYWNffvRAqm0aHqja9IY");
-    const [location, setLocation] = useState(null);
-    const [markerPosition, setMarkerPosition] = useState(null);
-    const [animal, setAnimal] = useState("");
-    const [size, setSize] = useState("");
-    const [ageCategory, setAgeCategory] = useState("");
-    const [aggressionLevel, setAggressionLevel] = useState("");
-    const [health, setHealth] = useState("");
-    const [loading, setLoading] = useState(true);
+    const petId = route.params.pet._id;
+    const [petName, setPetName] = useState(route.params.pet.name);
+    const [petDescription, setPetDescription] = useState(route.params.pet.description);
+    const avatar = route.params.pet.avatar.url;
+    const [location, setPetLocation] = useState(route.params.pet.area);
+    const { loading, message, error } = useSelector(state => state.message)
+    const [animal, setAnimal] = useState(route.params.pet.characteristics[0]);
+    const [size, setSize] = useState(route.params.pet.characteristics[1]);
+    const [ageCategory, setAgeCategory] = useState(route.params.pet.characteristics[2]);
+    const [aggressionLevel, setAggressionLevel] = useState(route.params.pet.characteristics[3]);
+    const [health, setHealth] = useState(route.params.pet.characteristics[4]);
 
     const animals = [
         { label: 'Dog', value: "dog" },
@@ -48,7 +44,6 @@ const AddReport = ({ navigation, route }) => {
         { label: 'Low', value: "low" },
         { label: 'Medium', value: "medium" },
         { label: 'High', value: "high" },
-        { label: 'Unknown', value: "unknown" },
     ];
 
     const healthStates = [
@@ -56,141 +51,73 @@ const AddReport = ({ navigation, route }) => {
         { label: 'Healthy', value: "healthy" },
     ];
 
-  useEffect(() => {
-    const getPermissions = async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          return;
-        }
-      };
-      getPermissions();
-      getCurrentLocation();
-  }, []);
-
-  const getCurrentLocation = async () => {
-    try{
-      let { coords } = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = coords;
-      const initialRegion = {
-        latitude,
-        longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.002,
-      };
-      setLocation(initialRegion);
-      setMarkerPosition(initialRegion);
-
-    }
-    catch (error) {
-    console.log('Error retrieving location:', error);
-    } finally {
-        setLoading(false);
-    }
-  }
-  const handleMarkerDragEnd = (e) => {
-    const { latitude, longitude } = e.nativeEvent.coordinate;
-    setMarkerPosition({ latitude, longitude });
-  };
-
-
     const dispatch = useDispatch()
 
-    const handleImage = () => {
-        navigation.navigate("camera", {
-            addReport: true
-        })
-    };
-
-    useEffect(() => {
-
-        if (route.params) {
-            if (route.params.image) {
-                setReportImage(route.params.image)
-            }
-        }
-
-    }, [route])
-
-    const addReportHandler = async () => {
-        const locationObject = await Location.reverseGeocodeAsync({
-            longitude: markerPosition.longitude,
-            latitude: markerPosition.latitude
-        });
-        const locationStr = (locationObject[0].street?locationObject[0].street : (locationObject[0].name? locationObject[0].name : "")) + " " + locationObject[0].city+ " " + ", " + locationObject[0].country;
+    const modifyPetHandler = async () => {
         const myForm = new FormData();
-        myForm.append("reportName", reportName);
-        myForm.append("reportDescription", reportDescription);
+        myForm.append("petId", petId);
+        myForm.append("petName", petName);
+        myForm.append("petDescription", petDescription);
         myForm.append("animal", animal);
         myForm.append("size", size);
         myForm.append("ageCategory", ageCategory);
         myForm.append("aggressionLevel", aggressionLevel);
         myForm.append("health", health);
-        myForm.append("location", locationStr);
-        myForm.append("latitude", markerPosition.latitude);
-        myForm.append("longitude", markerPosition.longitude);
-        myForm.append("reportImage", {
-            uri: reportImage,
-            type: mime.getType(reportImage),
-            name: reportImage.split("/").pop()
-        })
-
-        await dispatch(addReport(myForm));
-        await dispatch(getAllReports("", "", "", "", "", ""));
+        myForm.append("location", location);
+        await dispatch(modifyPet(myForm))
+        await dispatch(getAllPets("", "", "", "", "", ""))
         await dispatch(loadUser());
     }
 
-    if (loading) {
-        return (
-            <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#759" />
-            </View>
-        );
-    }
+    useEffect(() => {
+        if (error) {
+            alert(error);
+            dispatch({ type: "clearError" });
+            dispatch({ type: "clearError" });
+        }
+        if (message) {
+            alert(message)
+            dispatch({ type: "clearMessage" });
+        }
+    }, [alert, error, message, dispatch])
 
     return (
-        <ScrollView style={styles.containerBig}>
+        <ScrollView horizontal={false} style={styles.containerBig} keyboardShouldPersistTaps={'handled'}>
         <View style={{justifyContent: 'center'}}>
         <View style={styles.horizontalPaddingView}>
             <View style={styles.container}>
                 <Image style={styles.image} source={{ uri: user.avatar.url}}/>
                 <View style={{paddingHorizontal: 20}}>
                     <Text style={values.h1Style}>Hello, {user.name}</Text>
-                    <Text style={values.pStyle}>Tell us about the stray pet you saw</Text>
+                    <Text style={values.pStyle}>Tell us about the pet you want to give for adoption</Text>
                 </View>
             </View>
             <View style={{height: 40}}></View>
         </View>
-        <TouchableOpacity style={{alignItems: 'center'}} onPress={handleImage}>
-            <View style={stylesChoosePhoto.container}>
-                <Image style={stylesChoosePhoto.image} source={{ uri: reportImage ? reportImage : null}}/>
-                {!reportImage &&
-                <>
-                <Image style={stylesChoosePhoto.icon} source={require('../assets/uploadImage.jpg')}/>
-                <Text style={values.h2Style}>Choose a Photo</Text>
-                </>}
-            </View>
-        </TouchableOpacity>
-        <View style={{height: 20}}></View>
+        <View style={stylesChoosePhoto.container}>
+            <Image style={stylesChoosePhoto.image} source={{ uri: avatar}}/>
+        </View>
+        <View style={{height: 15}}></View>
         <View style={{alignItems: "center"}}>
         <View style={{ width: "75%"}}>
             <TextInput
                 style={styles.input}
                 placeholder="Title"
-                value={reportName}
-                onChangeText={setReportName}
+                value={petName}
+                onChangeText={setPetName}
             />
         </View>
         <View style={{ width: "75%", content: 'fill'}}>
             <TextInput
                 style={styles.input}
                 placeholder="Description"
-                value={reportDescription}
-                onChangeText={setReportDescription}
+                value={petDescription}
+                onChangeText={setPetDescription}
                 multiline
-                numberOfLines={reportDescription.split('\n').length}
+                numberOfLines={petDescription.split('\n').length}
             />
         </View>
-        <View style={{height: 15}}></View>
+        <View style={{height: 20}}></View>
         <View style={{ width: "75%"}}>
             <Dropdown
                 style={styles.dropdown}
@@ -263,40 +190,41 @@ const AddReport = ({ navigation, route }) => {
             />
         </View>
         <View style={{height: 20}}></View>
-        <View style={styles.mapContainer}>
-        {location && (
-            <MapView
-            provider = {PROVIDER_GOOGLE} 
-            style={styles.map}
-            initialRegion={location}
-            showsUserLocation={true}
-            showsMyLocationButton={true}
-            >
-            {markerPosition && (
-                <Marker
-                coordinate={markerPosition}
-                draggable={true}
-                onDragEnd={handleMarkerDragEnd}
-                pinColor = {"purple"}
+        <View style={{flex: 1,width: "80%", alignItems: "center"}}>
+            <ScrollView horizontal={true} style={{ width: "100%", height:'100%'}} keyboardShouldPersistTaps={'handled'}>
+                <GooglePlacesAutocomplete
+                    placeholder = {location}
+                    debounce={400}
+                    query = {{
+                        key:"AIzaSyAUqWMPfAQS19hQYWNffvRAqm0aHqja9IY",
+                    }}
+                    styles={{
+                    textInputContainer: {
+                        borderBottomWidth : 1.0,
+                        borderBottomColor: 'grey',
+                        padding: 0,
+                        justifyContent: "center",
+                        alignItems: "center"
+                    }
+                    }}
+                    onPress={item=>{setPetLocation(item.description)}}
                 />
-            )}
-            </MapView>
-        )}
+            </ScrollView>
         </View>
-        <View style={{height: 20}}></View>
+        <View style={{height: 30}}></View>
         <Button
             style={styles.btn}
-            onPress={addReportHandler}>
-            <Text style={{ color: "#fff" }}>Report</Text>
+            onPress={modifyPetHandler}>
+            <Text style={{ color: "#fff" }}>Modify Pet</Text>
         </Button>
-        </View>
-        </View>
         <View style={{height: 80}}></View>
+        </View>
+        </View>
         </ScrollView>
     );
 };
 
-export default AddReport;
+export default AddPet;
 
 const stylesChoosePhoto = StyleSheet.create({
     container: {
@@ -306,7 +234,8 @@ const stylesChoosePhoto = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        alignSelf:'center'
     },
     image: {
         width: '100%',
@@ -376,19 +305,7 @@ const styles = StyleSheet.create({
         padding: 5,
         width: "70%",
     },
-    map: {
-        width: '98%',
-        height: '98%',
-    },
-    mapContainer: {
-        width: '75%',
-        height: 150,
-        borderColor: 'black',
-        borderWidth: 0.5,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    dropdown: {
+    dropdown:{
         borderBottomWidth : 1.0,
         borderBottomColor: 'grey',
         padding: 0,
@@ -397,11 +314,5 @@ const styles = StyleSheet.create({
     },
     dropdownPlaceholder:{
         color: "#b5b5b5",
-    },
-    loadingContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+    }
 })
-

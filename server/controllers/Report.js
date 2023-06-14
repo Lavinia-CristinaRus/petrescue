@@ -1,4 +1,5 @@
 import { Report } from "../models/reports.js";
+import { Confirmation } from "../models/confirmations.js";
 // import { sendMail } from "../utils/sendMail.js";
 // import { sendToken } from "../utils/sendToken.js";
 import cloudinary from "cloudinary";
@@ -44,44 +45,43 @@ export const addReport = async (req, res) => {
       owner: owner,
     });
 
-    res.status(200).json({ success: true, message: "The stray animal was reported successfully" });
+    return res.status(200).json({ success: true, message: "The stray animal was reported successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const deleteReport = async (req, res) => {
   try {
-
-    const report = await Report.findById(req.report._id);
-
-    
+    await Report.deleteOne({_id:req.query.reportId});
+    await Confirmation.deleteMany({report:req.query.reportId});
+    return res.status(200).json({ success: true, message: "The report was deleted sucessfully" });  
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const updateReport = async (req, res) => {
   try {
-    const report = await Report.findById(req.report._id);
-    const { name, characteristics, area } = req.body;
-    const owner = req.user._id;
-    const avatar = req.files.avatar.tempFilePath;
-
-    report.name = name;
+    const { reportId, reportName, reportDescription, animal, size, ageCategory, aggressionLevel, health, location, latitude, longitude } = req.body;
+    const report = await Report.findById(reportId);
+    let characteristics = [];
+    characteristics.push(animal);
+    characteristics.push(size);
+    characteristics.push(ageCategory);
+    characteristics.push(aggressionLevel);
+    characteristics.push(health);
+    report.name = reportName;
+    report.description = reportDescription;
     report.characteristics = characteristics;
-    report.area = area;
-    report.owner = owner;
-    if(!(report.avatar === avatar)) {
-      const mycloud = await cloudinary.v2.uploader.upload(avatar);
-      fs.rmSync("./tmp", { recursive: true });
-    }
-
+    report.area.location = location;
+    report.area.longitude = longitude;
+    report.area.latitude = latitude;
     await report.save();
 
-    res.status(200).json({ success: true, message: "The report was updated successfully" });
+    return res.status(200).json({ success: true, message: "The report was updated successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -95,9 +95,9 @@ export const seenBy = async (req,res) => {
       await report.save();
     }
 
-    res.status(200).json({ success: true, message: "Number of users updated successfully" });
+    return res.status(200).json({ success: true, message: "Number of users updated successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 }
 export const unseenBy = async (req,res) => {
@@ -108,9 +108,9 @@ export const unseenBy = async (req,res) => {
     report.seen.pop(user);
     await report.save();
 
-    res.status(200).json({ success: true, message: "Number of users updated successfully" });
+    return res.status(200).json({ success: true, message: "Number of users updated successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 }
 
@@ -142,6 +142,6 @@ export const getAllReports = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 }

@@ -1,4 +1,5 @@
 import { Pet } from "../models/pets.js";
+import { Request } from "../models/requests.js";
 //import { sendMail } from "../utils/sendMail.js";
 //utils/sendToken.js";
 import cloudinary from "cloudinary";
@@ -39,34 +40,33 @@ export const addPet = async (req, res) => {
       owner: owner._id,
     });
 
-    res.status(200).json({ success: true, message: "Adoption announcment created successfully" });
+    return res.status(200).json({ success: true, message: "Adoption announcment created successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 
 export const updatePet = async (req, res) => {
   try {
-    const pet = await Pet.findById(req.pet._id);
-    const { name, characteristics, area } = req.body;
-    const owner = req.user._id;
-    const avatar = req.files.avatar.tempFilePath;
-
-    pet.name = name;
+    const { petId, petName, petDescription, animal, size, ageCategory, aggressionLevel, health, location} = req.body;
+    const pet = await Pet.findById(petId);
+    let characteristics = [];
+    characteristics.push(animal);
+    characteristics.push(size);
+    characteristics.push(ageCategory);
+    characteristics.push(aggressionLevel);
+    characteristics.push(health);
+    pet.name = petName;
+    pet.description = petDescription;
     pet.characteristics = characteristics;
-    pet.area = area;
-    pet.owner = owner;
-    if(!(pet.avatar === avatar)) { //de editat conditia
-      const mycloud = await cloudinary.v2.uploader.upload(avatar);
-      fs.rmSync("./tmp", { recursive: true });
-    }
-
+    pet.area = location;
     await pet.save();
 
-    res.status(200).json({ success: true, message: "Adoption announcement updated successfully" });
+    return res.status(200).json({ success: true, message: "The pet was updated successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.log(error);
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -97,6 +97,16 @@ export const getAllPets = async (req, res) => {
       return res.status(200).json({success: true, message: "No pets available for adoption yet"});
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 }
+
+export const deletePet = async (req, res) => {
+  try {
+    await Pet.deleteOne({_id:req.query.petId});
+    await Request.deleteMany({pet:req.query.petId});
+    return res.status(200).json({ success: true, message: "The pet was deleted sucessfully" });  
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};

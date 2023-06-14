@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity} from 'react-native';
-import {getReceivedConfirmations} from '../redux/action';
+import {getReceivedConfirmations, getAllReports, deleteReport} from '../redux/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Report from '../components/Report.jsx'
 import { SearchBar } from 'react-native-elements';
@@ -68,6 +68,15 @@ const ReceivedConfirmaionRequests = ({ navigation, route}) => {
         </View>
         {reports?.slice(0).reverse().map((data, index) => {
 
+            const handleDelete = async () => {
+              await dispatch(deleteReport(data._id));
+              dispatch(getReceivedConfirmations(keyword));
+              dispatch(getAllReports("", "", "", "", "", ""));
+            }
+            const handleModify = async () => {
+              navigation.navigate("modifyreport",{report:data});
+            }
+
             return(
               <View key={index}>
                 <View style={{height: 20}}></View>
@@ -82,7 +91,10 @@ const ReceivedConfirmaionRequests = ({ navigation, route}) => {
                   ownerAvatar = {data.owner.avatar.url}
                   ownerName = {data.owner.name}
                   seen ={data.seen}
+                  solved = {data.solved}
                   confirmations = {confirmations?confirmations[index]:[]}
+                  handleDelete = {handleDelete}
+                  handleModify = {handleModify}
                 />
               </View>
             )

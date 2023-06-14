@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity} from 'react-native';
-import {getReceivedRequests} from '../redux/action';
+import {getReceivedRequests, getAllPets, deleteReport} from '../redux/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pet from '../components/Pet.jsx'
 import { SearchBar } from 'react-native-elements';
@@ -56,6 +56,14 @@ const ReceivedAdoptionRequests = ({ navigation, route}) => {
           </TouchableOpacity>
         </View>
         {pets?.slice(0).reverse().map((data, index) => {
+          const handleDelete = async () => {
+            await dispatch(deletePet(data._id));
+            dispatch(getReceivedRequests(keyword));
+            dispatch(getAllPets("", "", "", "", "", ""));
+          }
+          const handleModify = async () => {
+            navigation.navigate("modifypet",{pet:data});
+          }
             return(
               <View key={index}>
                 <View style={{height: 20}}></View>
@@ -70,6 +78,9 @@ const ReceivedAdoptionRequests = ({ navigation, route}) => {
                   ownerAvatar = {data.owner.avatar.url}
                   ownerName = {data.owner.name}
                   requests = {requests?requests[index]:[]}
+                  solved = {data.solved}
+                  handleDelete = {handleDelete}
+                  handleModify = {handleModify}
                 />
               </View>
             )
