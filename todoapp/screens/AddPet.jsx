@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity, ProgressViewIOSComponent} from 'react-native';
+import { StyleSheet, Text, View, Image , ScrollView, TextInput, TouchableOpacity} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from 'react-native-paper';
@@ -6,7 +6,6 @@ import { addPet, getAllPets, loadUser } from '../redux/action';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { Dropdown } from 'react-native-element-dropdown';
 import mime from 'mime';
-//to add characteristics
 
 const AddPet = ({ navigation, route }) => {
     

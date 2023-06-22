@@ -5,9 +5,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useDispatch, useSelector} from 'react-redux';
 import { Button } from 'react-native-paper';
 import AdoptionRequest from './AdoptionRequest';
+import RequestedPhotos from './RequestedPhotos';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, saved, handleSave, handleUnsave, adoptHandler, requests, keyword, solved, handleModify, handleDelete}) => {
+const Pet = ({_id,name, description, characteristics, avatar, location, ownerId, ownerAvatar, ownerName, petImageId, saved, handleSave, handleUnsave, adoptHandler, requests, keyword, solved, handleModify, handleDelete, isPhotoRequested, requestedPhotos, handleImage, image}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth);
   const [savedByUser, setSaved] = useState(saved);
@@ -67,7 +68,7 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
         }}>
           <Text style={{fontSize: 14}}>{location}</Text>
       </View>
-      {ownerId==user.user._id?<></>:requests?<></>:<View
+      {(ownerId==user.user._id||requests||handleImage)?<></>:<View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -110,6 +111,16 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
             </View>
           )
         }))
+      : handleImage?
+      <RequestedPhotos
+        requestedPhotos = {requestedPhotos}
+        isPhotoRequested = {isPhotoRequested}
+        ownerId = {ownerId}
+        petId={_id}
+        handleImage={handleImage}
+        image={image}
+        petImageId = {petImageId}
+      />
       :(ownerId !== user.user._id?
         <Button
             style={styles.btn}

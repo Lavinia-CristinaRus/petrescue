@@ -53,8 +53,13 @@ export const addReport = async (req, res) => {
 
 export const deleteReport = async (req, res) => {
   try {
-    await Report.deleteOne({_id:req.query.reportId});
-    await Confirmation.deleteMany({report:req.query.reportId});
+    const report = await Report.findByIdAndDelete(req.query.reportId);
+    await cloudinary.v2.uploader.destroy(report.avatar.public_id);
+    const confirmations = await Confirmation.find({report:req.query.reportId});
+    for(let i=0; i<confirmations.length;i++) {
+      await cloudinary.v2.uploader.destroy(confirmations[i].avatar.public_id);
+      Confirmation.deleteOne({_id:confirmations[i]._id});
+    }
     return res.status(200).json({ success: true, message: "The report was deleted sucessfully" });  
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });

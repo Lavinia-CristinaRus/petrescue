@@ -1,6 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import {View, ScrollView, Text, TouchableOpacity} from 'react-native';
-import {getReceivedRequests, getAllPets, deleteReport} from '../redux/action';
+import {getReceivedRequests, getAllPets, deletePet} from '../redux/action';
 import { useDispatch, useSelector } from 'react-redux';
 import Pet from '../components/Pet.jsx'
 import { SearchBar } from 'react-native-elements';
@@ -77,10 +77,11 @@ const ReceivedAdoptionRequests = ({ navigation, route}) => {
                   ownerId = {data.owner._id}
                   ownerAvatar = {data.owner.avatar.url}
                   ownerName = {data.owner.name}
-                  requests = {requests?requests[index]:[]}
+                  requests = {requests?requests[pets.length-index-1]:[]}
                   solved = {data.solved}
                   handleDelete = {handleDelete}
                   handleModify = {handleModify}
+                  keyword = {keyword}
                 />
               </View>
             )

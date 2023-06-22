@@ -5,7 +5,8 @@ import {
   retractRequest,
   getReceivedRequests,
   acceptRequest,
-  rejectRequest
+  rejectRequest,
+  getAdoptedPets
 } from "../controllers/Request.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
@@ -17,5 +18,6 @@ router.route("/retractrequest/:_id").put(isAuthenticated, retractRequest);
 router.route("/acceptrequest/:_id").put(isAuthenticated, acceptRequest);
 router.route("/rejectrequest/:_id").put(isAuthenticated, rejectRequest);
 router.route("/getreceivedrequests").get(isAuthenticated, getReceivedRequests);
+router.route("/getadoptedpets").get(isAuthenticated, getAdoptedPets);
 
 export default router;

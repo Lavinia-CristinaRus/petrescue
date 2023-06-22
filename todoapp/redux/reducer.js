@@ -177,9 +177,7 @@ export const reportReducer = createReducer(
       state.loading = true;
     },
     seenPetSuccess: (state, action) => {
-      // const postId = action.payload.postId;
-      // const postToUpdate = state.post.find((p) => p._id === postId);
-      // postToUpdate.likes += 1;
+      state.loading = false;
     },    
     seenPetFailure: (state, action) => {
       state.loading = false;
@@ -191,9 +189,7 @@ export const reportReducer = createReducer(
       state.loading = true;
     },
     unseenPetSuccess: (state, action) => {
-      // const postId = action.payload.postId;
-      // const postToUpdate = state.post.find((p) => p._id === postId);
-      // postToUpdate.likes -= 1;
+      state.loading = false;
     },    
     unseenPetFailure: (state, action) => {
       state.loading = false;
@@ -269,9 +265,7 @@ export const petReducer = createReducer(
       state.loading = true;
     },
     savePetSuccess: (state, action) => {
-      // const postId = action.payload.postId;
-      // const postToUpdate = state.post.find((p) => p._id === postId);
-      // postToUpdate.likes += 1;
+      state.loading = false;
     },    
     savePetFailure: (state, action) => {
       state.loading = false;
@@ -283,9 +277,7 @@ export const petReducer = createReducer(
       state.loading = true;
     },
     unsavePetSuccess: (state, action) => {
-      // const postId = action.payload.postId;
-      // const postToUpdate = state.post.find((p) => p._id === postId);
-      // postToUpdate.likes -= 1;
+      state.loading = false;
     },    
     unsavePetFailure: (state, action) => {
       state.loading = false;
@@ -335,6 +327,45 @@ export const petReducer = createReducer(
       // state.message = action.payload.message;
     },
     getFavouritesFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    getMyFormerPetsRequest: (state) => {
+      state.loading = true;
+    },
+    getMyFormerPetsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.formerpets = action.payload;
+      // state.message = action.payload.message;
+    },
+    getMyFormerPetsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    requestPhotoRequest: (state) => {
+      state.loading = true;
+    },
+    requestPhotoSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    requestPhotoFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    sendPhotoRequest: (state) => {
+      state.loading = true;
+    },
+    sendPhotoSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.message = action.payload;
+      // state.message = action.payload.message;
+    },
+    sendPhotoFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
@@ -519,6 +550,19 @@ export const adoptionReducer = createReducer(
       // state.message = action.payload.message;
     },
     rejectRequestFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    getAdoptedPetsRequest: (state) => {
+      state.loading = true;
+    },
+    getAdoptedPetsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.adoptedpets = action.payload;
+      // state.message = action.payload.message;
+    },
+    getAdoptedPetsFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },

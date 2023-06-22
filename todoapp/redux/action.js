@@ -672,3 +672,73 @@ export const getFavourites = () => async (dispatch) => {
     });
   }
 };
+
+export const getMyFormerPets = () => async (dispatch) => {
+  try {
+    dispatch({ type: "getMyFormerPetsRequest" });
+    const { data } = await axios.get(`${serverUrl}/getmyformerpets`);
+    dispatch({ type: "getMyFormerPetsSuccess", payload: data});
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "getMyFormerPetsFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const getAdoptedPets = () => async (dispatch) => {
+  try {
+    dispatch({ type: "getAdoptedPetsRequest" });
+    const { data } = await axios.get(`${serverUrl}/getadoptedpets`);
+    dispatch({ type: "getAdoptedPetsSuccess", payload: data});
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "getAdoptedPetsFailure",
+      payload: error.response.data.message,
+    });
+  }
+}
+
+export const requestPhoto = (petId) => async (dispatch) => {
+  try {
+    dispatch({ type: "requestPhotoRequest" });
+
+    const { data } = await axios.put(`${serverUrl}/requestphoto/${petId}`,
+      { petId },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    dispatch({ type: "requestPhotoSuccess", payload: data.message });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "requestPhotoFailure",
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const sendPhoto = (petData) => async (dispatch) => {
+  try {
+    dispatch({ type: "sendPhotoRequest" });
+    const { data } = await axios.put(`${serverUrl}/sendphoto`, petData ,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    dispatch({ type: "sendPhotoSuccess", payload: data.message });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "sendPhotoFailure",
+      payload: error.response.data.message,
+    });
+  }
+};

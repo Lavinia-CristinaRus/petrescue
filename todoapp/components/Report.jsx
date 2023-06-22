@@ -84,7 +84,7 @@ const Report = ({_id,name, description, characteristics, avatar, location, owner
           paddingBottom: 15,
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {(ownerId!=user.user._id)&&<TouchableOpacity onPress={() => {if(seenByUser){ handleUnseen(); setNrOfSeens(nrOfSeens-1)} else {handleSeen(); setNrOfSeens(nrOfSeens+1)} setSeen(!seenByUser)}}>
+          {(ownerId!=user.user._id &&user.user.verified)&&<TouchableOpacity onPress={() => {if(seenByUser){ handleUnseen(); setNrOfSeens(nrOfSeens-1)} else {handleSeen(); setNrOfSeens(nrOfSeens+1)} setSeen(!seenByUser)}}>
             <AntDesign
               name={seenByUser ? 'eye' : 'eyeo'}
               style={{

@@ -8,6 +8,7 @@ const CameraComponent = ({ navigation, route }) => {
     const [hasPermission, setHasPermission] = useState(null);
     const [type, setType] = useState(CameraType.back);
     const [camera, setCamera] = useState(null);
+    const [petId, setPetId] = useState(route.params.petId);
 
 
 
@@ -28,12 +29,13 @@ const CameraComponent = ({ navigation, route }) => {
         }
 
         const data = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true, aspect: [1, 2], quality: 1
+            allowsEditing: true, aspect: [1, 1], quality: 1
         });
         if (route.params.updateProfile) return navigation.navigate("profile", { image: data.uri })
         else if (route.params.addReport) return navigation.navigate("addreport", { image: data.uri })
         else if (route.params.addPet) return navigation.navigate("addpet", { image: data.uri })
         else if (route.params.addConfirmation) return navigation.navigate("addconfirmation", { image: data.uri })
+        else if(route.params.photoRequests) return navigation.navigate("photorequests", { image: data.uri, petId: petId })
         else return navigation.navigate("register", { image: data.uri })
     }
 
@@ -44,6 +46,7 @@ const CameraComponent = ({ navigation, route }) => {
         else if (route.params.addReport) return navigation.navigate("addreport", { image: data.uri })
         else if (route.params.addPet) return navigation.navigate("addpet", { image: data.uri })
         else if (route.params.addConfirmation) return navigation.navigate("addconfirmation", { image: data.uri })
+        else if(route.params.photoRequests) return navigation.navigate("photorequests", { image: data.uri, petId: petId })
         else return navigation.navigate("register", { image: data.uri })
 
     }
@@ -56,7 +59,7 @@ const CameraComponent = ({ navigation, route }) => {
         return <Text>No access to camera</Text>;
     }
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1}}>
             <Camera type={type} style={{ flex: 1, aspectRatio: 1 }} ratio="1:1" ref={(e) => setCamera(e)} />
 
 

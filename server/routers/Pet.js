@@ -4,7 +4,10 @@ import {
   updatePet,
   deletePet,
   getAllPets,
-  getFavourites
+  getFavourites,
+  getMyFormerPets,
+  requestPhoto,
+  sendPhoto
 } from "../controllers/Pet.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
@@ -14,6 +17,8 @@ router.route("/getallpets").get(getAllPets);
 router.route("/deletepet").delete(isAuthenticated, deletePet);
 router.route("/modifypet").put(isAuthenticated, updatePet);
 router.route("/getfavourites").get(isAuthenticated, getFavourites);
-
+router.route("/getmyformerpets").get(isAuthenticated, getMyFormerPets);
+router.route("/requestphoto/:_id").put(isAuthenticated, requestPhoto);
+router.route("/sendphoto").put(isAuthenticated, sendPhoto);
 
 export default router;

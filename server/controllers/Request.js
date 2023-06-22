@@ -1,9 +1,6 @@
 import { Request } from "../models/requests.js";
 import { Pet } from "../models/pets.js";
 //import { sendMail } from "../utils/sendMail.js";
-//utils/sendToken.js";
-import cloudinary from "cloudinary";
-import fs from "fs";
 
 export const addRequest = async (req, res) => {
   try {
@@ -115,4 +112,28 @@ export const getReceivedRequests = async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
+}
+
+export const getAdoptedPets = async (req, res) => {
+  try {
+    const user = req.user._id;
+    const pets = await Request.find({accepted: true, owner: user},{id_:0,owner:0,createdAt:0,valid:0,accepted:0})
+      .populate({
+        path: 'pet',
+        select: 'name avatar description characteristics area owner isPhotoRequested requestedPhotos',
+        populate: {
+          path : 'owner',
+          select: 'name avatar'
+        }
+      });
+    if(pets) {
+      return res.status(200).send(pets);
+    }
+    else {
+      return res.status(200).json({success: true, message: "You have no pets that were adopted through this app"});
+    }
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+
 }

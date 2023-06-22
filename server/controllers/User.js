@@ -7,23 +7,16 @@ import fs from "fs";
 export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
     const avatar = req.files.avatar.tempFilePath;
-
     let user = await User.findOne({ email });
-
     if (user) {
       return res
         .status(400)
         .json({ success: false, message: "User already exists" });
     }
-
     const otp = Math.floor(Math.random() * 1000000);
-
     const mycloud = await cloudinary.v2.uploader.upload(avatar);
-
     fs.rmSync("./tmp", { recursive: true });
-
     user = await User.create({
       name,
       email,
@@ -35,9 +28,7 @@ export const register = async (req, res) => {
       otp,
       otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 5000),
     });
-
     await sendMail(email, "Verify your account", `Your OTP is ${otp}`);
-
     sendToken(
       res,
       user,

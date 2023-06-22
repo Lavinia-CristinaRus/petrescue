@@ -53,11 +53,8 @@ export const retractConfirmation = async (req, res) => {
 
 export const confirmRequest = async (req, res) => {
   try {
-
     const confirmation = await Confirmation.findById(req.body.confirmationId);
-
     confirmation.accepted = true;
-
     await confirmation.save();
     const confirmations = await Confirmation.find({Report:confirmation.report});
     for(let i=0; i<confirmations.length;i++) {
@@ -95,7 +92,7 @@ export const getConfirmationsByUser = async (req, res) => {
   try {
     // const confirmation = await Confirmation.find({owner: req.user._id}).populate('report',['name', 'avatar', 'description','characteristics', 'area']);
     const keyword = req.query.keyword;
-    const unfiteredConfirmation = await Confirmation.find({owner: req.user._id})
+    const unfilteredConfirmation = await Confirmation.find({owner: req.user._id})
       .populate({
         path: 'report',
         select: 'name avatar description characteristics area owner seen',
@@ -105,7 +102,7 @@ export const getConfirmationsByUser = async (req, res) => {
         }
       })
       .populate('owner',['name', 'avatar']);
-    const confirmation = unfiteredConfirmation.filter(conf => conf.report.name.includes(keyword));
+    const confirmation = unfilteredConfirmation.filter(conf => conf.report.name.includes(keyword));
     return res.status(200).send(confirmation);
   } catch (error) {
     console.log(error);

@@ -1,10 +1,8 @@
 import { Pet } from "../models/pets.js";
 import { Request } from "../models/requests.js";
 //import { sendMail } from "../utils/sendMail.js";
-//utils/sendToken.js";
 import cloudinary from "cloudinary";
 import fs from "fs";
-//to check addPet info
 
 export const addPet = async (req, res) => {
   try {
@@ -103,7 +101,8 @@ export const getAllPets = async (req, res) => {
 
 export const deletePet = async (req, res) => {
   try {
-    await Pet.deleteOne({_id:req.query.petId});
+    const pet = await Pet.findByIdAndDelete(req.query.petId);
+    await cloudinary.v2.uploader.destroy(pet.avatar.public_id);
     await Request.deleteMany({pet:req.query.petId});
     return res.status(200).json({ success: true, message: "The pet was deleted sucessfully" });  
   } catch (error) {
@@ -117,6 +116,57 @@ export const getFavourites = async (req, res) => {
     const favourites = await Pet.find({_id: { $in: ids }, solved:false}).populate('owner',['name', 'avatar']);
     return res.status(200).send(favourites);  
   } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getMyFormerPets = async (req, res) => {
+  try {
+    const user = req.user._id;
+    const pets = await Pet.find({solved: true, owner: user}).populate('owner',['name', 'avatar']);
+    if(pets) {
+      return res.status(200).send(pets);
+    }
+    else {
+      return res.status(200).json({success: true, message: "You have no pets that were adopted through this app"});
+    }
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+}
+
+export const requestPhoto = async (req, res) => {
+  try {
+
+    const pet = await Pet.findById(req.body.petId);
+
+    pet.isPhotoRequested = true;
+
+    await pet.save();
+
+    res.status(200).json({ success: true, message: "Photo requested successfully"});
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const sendPhoto = async (req, res) => {
+  try {
+    const {petId} = req.body;
+    const pet = await Pet.findById(petId);
+    const image = req.files.petImage.tempFilePath;
+
+    const avatar = await cloudinary.v2.uploader.upload(image);
+
+    fs.rmSync("./tmp", { recursive: true });
+    pet.isPhotoRequested = false;
+    pet.requestedPhotos.push(avatar);
+
+    await pet.save();
+
+    return res.status(200).json({ success: true, message: "Photo sent successfully"});
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ success: false, message: error.message });
   }
 };

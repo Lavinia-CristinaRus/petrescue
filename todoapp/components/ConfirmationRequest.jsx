@@ -66,16 +66,16 @@ const ConfirmationRequest = ({_id, avatar, description, ownerId, ownerAvatar, ow
         :<View style={{flexDirection: 'row', alignItems: 'center'}}>
             <View style={{width: '50%'}}>
                 <Button
-                    style={[styles.btn, {backgroundColor: "#075"}]}
+                    style={[styles.btn, {backgroundColor: "#075", padding:0}]}
                     onPress={confirmRequestHandler}>
-                    <Text style={{ color: "#fff" }}>Confirm</Text>
+                    <Text style={{ color: "#fff", padding:0, fontSize: 14 }}>Confirm</Text>
                 </Button>
             </View>
             <View style={{width: '50%'}}>
                 <Button
-                    style={[styles.btn, {backgroundColor: "#933"}]}
+                    style={[styles.btn, {backgroundColor: "#933", padding:0}]}
                     onPress={denyRequestHandler}>
-                    <Text style={{ color: "#fff" }}>Deny</Text>
+                    <Text style={{ color: "#fff", fontSize: 14 }}>Deny</Text>
                 </Button>
             </View>
         </View>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
   btn: {
-    width: "70%",
+    width: "80%",
     padding:0,
     alignSelf:'center',
     borderRadius: 50

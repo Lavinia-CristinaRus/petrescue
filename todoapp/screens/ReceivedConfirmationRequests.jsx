@@ -67,7 +67,6 @@ const ReceivedConfirmaionRequests = ({ navigation, route}) => {
           </TouchableOpacity>
         </View>
         {reports?.slice(0).reverse().map((data, index) => {
-
             const handleDelete = async () => {
               await dispatch(deleteReport(data._id));
               dispatch(getReceivedConfirmations(keyword));
@@ -92,9 +91,10 @@ const ReceivedConfirmaionRequests = ({ navigation, route}) => {
                   ownerName = {data.owner.name}
                   seen ={data.seen}
                   solved = {data.solved}
-                  confirmations = {confirmations?confirmations[index]:[]}
+                  confirmations = {confirmations?confirmations[reports.length-index-1]:[]}
                   handleDelete = {handleDelete}
                   handleModify = {handleModify}
+                  keyword = {keyword}
                 />
               </View>
             )
