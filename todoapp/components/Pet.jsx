@@ -111,7 +111,7 @@ const Pet = ({_id,name, description, characteristics, avatar, location, ownerId,
             </View>
           )
         }))
-      : handleImage?
+      : requestedPhotos?
       <RequestedPhotos
         requestedPhotos = {requestedPhotos}
         isPhotoRequested = {isPhotoRequested}
