@@ -117,7 +117,7 @@ export const getReceivedRequests = async (req, res) => {
 export const getAdoptedPets = async (req, res) => {
   try {
     const user = req.user._id;
-    const pets = await Request.find({accepted: true, owner: user},{id_:0,owner:0,createdAt:0,valid:0,accepted:0})
+    const pets = await Request.find({accepted: true, owner: user},{_id:0,owner:0,createdAt:0,valid:0,accepted:0})
       .populate({
         path: 'pet',
         select: 'name avatar description characteristics area owner isPhotoRequested requestedPhotos',
