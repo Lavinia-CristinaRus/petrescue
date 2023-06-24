@@ -1,6 +1,7 @@
 import { Confirmation } from "../models/confirmations.js";
 import { Report } from "../models/reports.js";
-//import { sendMail } from "../utils/sendMail.js";
+import { User } from "../models/users.js";
+import { sendMail } from "../utils/sendMail.js";
 //utils/sendToken.js";
 import cloudinary from "cloudinary";
 import fs from "fs";
@@ -29,6 +30,8 @@ export const addConfirmation = async (req, res) => {
       owner: owner._id,
       report: reportId,
     });
+    const user = await User.findById(owner._id);
+    await sendMail(user.email, "Pet care instructions", `Hello,\n\n\nYou've just completed a form for an animal you picked up from the street. Please take a look at the instructions below.\n\nInstructions for dog registration: https://greenvetcare.ro/microcip-si-inregistrare-cadrul-legal-pentru-caini/ \nInstructions for pet care: https://www.pethope.ro/ro/informatii-utile/intrebari-frecvente.html \n\n\nPlease take care of that pet, but also of yourself,\nPetRescue`);
     res.status(200).json({ success: true, messageConf: "Confirmation request created successfully" });
   } catch (error) {
     console.log(error);

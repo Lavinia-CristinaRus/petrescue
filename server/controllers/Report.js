@@ -4,6 +4,7 @@ import { Confirmation } from "../models/confirmations.js";
 // import { sendToken } from "../utils/sendToken.js";
 import cloudinary from "cloudinary";
 import fs from "fs";
+import { User } from "../models/users.js";
 // to check addReport info
 
 export const addReport = async (req, res) => {

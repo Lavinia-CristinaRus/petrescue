@@ -1,6 +1,7 @@
 import { Request } from "../models/requests.js";
 import { Pet } from "../models/pets.js";
-//import { sendMail } from "../utils/sendMail.js";
+import { sendMail } from "../utils/sendMail.js";
+import { User } from "../models/users.js";
 
 export const addRequest = async (req, res) => {
   try {
@@ -18,8 +19,7 @@ export const addRequest = async (req, res) => {
       owner:owner._id,
       pet: petId,
     });
-
-    res.status(200).json({ success: true, message: "Adoption request created successfully" });
+    res.status(200).json({ success: true, message: "Adoption request created successfully!\n Please check your email" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: error.message });
@@ -56,8 +56,13 @@ export const acceptRequest = async (req, res) => {
       }
     }
     const pet  = await Pet.findById(request.pet);
+    const owner  = await User.findById(pet.owner);
+    const adopter  = await User.findById(request.owner);
+    console.log()
     pet.solved = true;
     await pet.save();
+    await sendMail(adopter.email, "Contact data", `Hello,\n\n\nYour adoption request has just been accepted. You can contact the owner on this email address: ${owner.email}. \n\n\nPlease take care of that pet, but also of yourself,\nPetRescue`);
+    await sendMail(owner.email, "Contact data", `Hello,\n\n\nYou've just accepted an adoption request. You can contact the adopter on this email address: ${adopter.email}.\n\nAlso, you can use the contract generator from profile section to generate the adoption contract when you meet up.\n\n\nPlease take care of that pet, but also of yourself,\nPetRescue`);
     return res.status(200).send(request);
   } catch (error) {
     console.log(error);
