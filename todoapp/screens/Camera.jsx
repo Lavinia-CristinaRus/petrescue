@@ -9,6 +9,8 @@ const CameraComponent = ({ navigation, route }) => {
     const [type, setType] = useState(CameraType.back);
     const [camera, setCamera] = useState(null);
     const [petId, setPetId] = useState(route.params.petId);
+    const [ownerImage, setOwnerImage] = useState(route.params.ownerImage);
+    const [adopterImage, setAdopterImage] = useState(route.params.adopterImage);
 
 
 
@@ -36,6 +38,8 @@ const CameraComponent = ({ navigation, route }) => {
         else if (route.params.addPet) return navigation.navigate("addpet", { image: data.uri })
         else if (route.params.addConfirmation) return navigation.navigate("addconfirmation", { image: data.uri })
         else if(route.params.photoRequests) return navigation.navigate("photorequests", { image: data.uri, petId: petId })
+        else if(route.params.identityCard2) return navigation.navigate("scannids", { adopterImage: data.uri, ownerImage: ownerImage })
+        else if(route.params.identityCard1) return navigation.navigate("scannids", { adopterImage: adopterImage, ownerImage: data.uri })
         else return navigation.navigate("register", { image: data.uri })
     }
 
@@ -47,6 +51,8 @@ const CameraComponent = ({ navigation, route }) => {
         else if (route.params.addPet) return navigation.navigate("addpet", { image: data.uri })
         else if (route.params.addConfirmation) return navigation.navigate("addconfirmation", { image: data.uri })
         else if(route.params.photoRequests) return navigation.navigate("photorequests", { image: data.uri, petId: petId })
+        else if(route.params.identityCard2) return navigation.navigate("scannids", { adopterImage: data.uri, ownerImage: ownerImage })
+        else if(route.params.identityCard1) return navigation.navigate("scannids", { adopterImage: adopterImage, ownerImage: data.uri })
         else return navigation.navigate("register", { image: data.uri })
 
     }

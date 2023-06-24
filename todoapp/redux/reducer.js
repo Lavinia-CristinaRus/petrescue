@@ -369,6 +369,20 @@ export const petReducer = createReducer(
       state.loading = false;
       state.error = action.payload;
     },
+    scannIdsRequest: (state) => {
+      state.loading = true;
+    },
+    scannIdsSuccess: (state, action) => {
+      state.loading = false;
+      // state.isAuthenticated = true;
+      state.ownerData = action.payload.ownerData;
+      state.adopterData = action.payload.adopterData;
+      // state.message = action.payload.message;
+    },
+    scannIdsFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 );
 

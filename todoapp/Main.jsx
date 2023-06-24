@@ -29,6 +29,8 @@ import ModifyPet from './screens/ModifyPet'
 import Favourites from './screens/Favourites'
 import MyFormerPets from './screens/MyFormerPets'
 import PhotoRequests from './screens/PhotoRequests'
+import ScannIDs from './screens/ScannIDs'
+import GenerateContract from './screens/GenerateContract'
 
 const Stack = createNativeStackNavigator()
 
@@ -73,6 +75,8 @@ const Main = () => {
                 <Stack.Screen name='favourites' component={Favourites} options={{ headerShown: false }} />
                 <Stack.Screen name='myformerpets' component={MyFormerPets} options={{ headerShown: false }} />
                 <Stack.Screen name='photorequests' component={PhotoRequests} options={{ headerShown: false }} />
+                <Stack.Screen name='scannids' component={ScannIDs} options={{ headerShown: false }} />
+                <Stack.Screen name='generatecontract' component={GenerateContract} options={{ headerShown: false }} />
             </Stack.Navigator>
 
             {isAuthenticated && <Footer />}

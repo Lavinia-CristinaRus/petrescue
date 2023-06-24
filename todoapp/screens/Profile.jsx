@@ -113,6 +113,13 @@ const Profile = ({ navigation, route }) => {
                         Photo requests
                     </Button>
                 }
+                
+                <Button
+                    onPress={() => navigation.navigate("scannids")}
+                    color='rgb(50,50,50)'
+                >
+                    Generate contract
+                </Button>
 
                 <Button
                     color='rgb(50,50,50)'

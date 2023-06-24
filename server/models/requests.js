@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
 const requestSchema = new mongoose.Schema({
@@ -8,12 +8,12 @@ const requestSchema = new mongoose.Schema({
   },
 
   owner: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
 
   pet: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Pet',
   },
 

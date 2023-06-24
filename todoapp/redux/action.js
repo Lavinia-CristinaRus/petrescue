@@ -742,3 +742,24 @@ export const sendPhoto = (petData) => async (dispatch) => {
     });
   }
 };
+
+export const scannIds = (idsData) => async (dispatch) => {
+  try {
+    dispatch({ type: "scannIdsRequest" });
+    const { data } = await axios.post(`${serverUrl}/scannids`, idsData ,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    dispatch({ type: "scannIdsSuccess", payload: data });
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: "scannIdsFailure",
+      payload: error.response.data.message,
+    });
+  }
+};

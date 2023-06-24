@@ -7,7 +7,8 @@ import {
   getFavourites,
   getMyFormerPets,
   requestPhoto,
-  sendPhoto
+  sendPhoto,
+  scannIds
 } from "../controllers/Pet.js";
 import { isAuthenticated } from "../middleware/auth.js";
 
@@ -20,5 +21,6 @@ router.route("/getfavourites").get(isAuthenticated, getFavourites);
 router.route("/getmyformerpets").get(isAuthenticated, getMyFormerPets);
 router.route("/requestphoto/:_id").put(isAuthenticated, requestPhoto);
 router.route("/sendphoto").put(isAuthenticated, sendPhoto);
+router.route("/scannids").post(scannIds);
 
 export default router;

@@ -1,8 +1,15 @@
 import { Pet } from "../models/pets.js";
 import { Request } from "../models/requests.js";
 //import { sendMail } from "../utils/sendMail.js";
+import * as mindee from "mindee";
 import cloudinary from "cloudinary";
 import fs from "fs";
+
+const mindeeClient = new mindee.Client({ apiKey: "5e7445b7a9bec0e8db2203520f3c315b" })
+.addEndpoint({
+    accountName: "lavirus",
+    endpointName: "identity_card",
+});
 
 export const addPet = async (req, res) => {
   try {
@@ -165,6 +172,58 @@ export const sendPhoto = async (req, res) => {
     await pet.save();
 
     return res.status(200).json({ success: true, message: "Photo sent successfully"});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const scannIds = async (req, res) => {
+  try {
+    const ownerImage = req.files.ownerImage.tempFilePath;
+    const adopterImage = req.files.adopterImage.tempFilePath;
+    console.log("adopterImage:",adopterImage, "\nownerImage:",ownerImage);
+    if(!adopterImage||!ownerImage) {
+      return res.status(500).json({ success: false, message: "Please upload both IDs" });
+    }
+    let ownerData = null;
+    let adopterData = null;
+
+    const apiResponse1 = await mindeeClient
+    .docFromPath(ownerImage)
+    .parse(mindee.CustomV1, { endpointName: "identity_card" });
+    const ownerString = apiResponse1.document.toString();
+    let domiciliu = ownerString.match(/domiciliu:\s*(.*)/);
+    let nr_buletin = ownerString.match(/nr_buletin:\s*(.*)/);
+    let nume = ownerString.match(/nume:\s*(.*)/);
+    let prenume = ownerString.match(/prenume:\s*(.*)/);
+    let serie_buletin = ownerString.match(/serie_buletin:\s*(.*)/);
+    ownerData = {
+      domiciliu: domiciliu[1],
+      nr_buletin:nr_buletin[1],
+      nume:nume[1],
+      prenume:prenume[1],
+      serie_buletin:serie_buletin[1]
+    };
+
+    const apiResponse2 = await mindeeClient
+    .docFromPath(adopterImage)
+    .parse(mindee.CustomV1, { endpointName: "identity_card" });
+    const adopterString = apiResponse2.document.toString();
+    domiciliu = adopterString.match(/domiciliu:\s*(.*)/);
+    nr_buletin = adopterString.match(/nr_buletin:\s*(.*)/);
+    nume = adopterString.match(/nume:\s*(.*)/);
+    prenume = adopterString.match(/prenume:\s*(.*)/);
+    serie_buletin = adopterString.match(/serie_buletin:\s*(.*)/);
+    adopterData = {
+      domiciliu: domiciliu[1],
+      nr_buletin:nr_buletin[1],
+      nume:nume[1],
+      prenume:prenume[1],
+      serie_buletin:serie_buletin[1]
+    };
+
+    return res.status(200).send({ownerData, adopterData});
   } catch (error) {
     console.log(error);
     return res.status(500).json({ success: false, message: error.message });
