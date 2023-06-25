@@ -274,6 +274,7 @@ const GenerateContract = ({ navigation, route }) => {
                     placeholder="CI number"
                     value={ownerCiNr}
                     onChangeText={setOwnerCiNr}
+                    keyboardType="number-pad"
                 />
             </View>
             <View style={{ width: "75%"}}>
@@ -282,6 +283,7 @@ const GenerateContract = ({ navigation, route }) => {
                     placeholder="Phone number"
                     value={ownerPhone}
                     onChangeText={setOwnerPhone}
+                    keyboardType="number-pad"
                 />
             </View>
         </View>
@@ -322,6 +324,7 @@ const GenerateContract = ({ navigation, route }) => {
                     placeholder="CI number"
                     value={adopterCiNr}
                     onChangeText={setAdopterCiNr}
+                    keyboardType="number-pad"
                 />
             </View>
             <View style={{ width: "75%"}}>
@@ -330,6 +333,7 @@ const GenerateContract = ({ navigation, route }) => {
                     placeholder="Phone number"
                     value={adopterPhone}
                     onChangeText={setAdopterPhone}
+                    keyboardType="number-pad"
                 />
             </View>
         </View>
@@ -344,7 +348,7 @@ const GenerateContract = ({ navigation, route }) => {
             <View style={{ width: "75%"}}>
                 <TextInput
                     style={styles.input}
-                    placeholder="Species: "
+                    placeholder="Species"
                     value={petSpecies}
                     onChangeText={setPetSpecies}
                 />
